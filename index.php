@@ -685,7 +685,7 @@ alert-modal        .width-200% { width: 200%; }
             } else {
                 dayEvents.forEach(e => {
                     const item = document.createElement('div');
-                    item.className = 'padding-12px borderRadius-8px border-1px_solid_var(--border-color) hover:backgroundColor-var(--primary-light) cursor-pointer transition-0.2s ecbounce-2';
+                    item.className = 'padding-12px borderRadius-8px border-1px_solid_var(--border-color) hover:backgroundColor-var(--primary-light) cursor-pointer transition-0.2s';
                     item.onclick = (event) => {
                         event.stopPropagation(); // Avoid day-cell click trigger loop
                         showEventDetailSlide(e.title, e.description || "No description provided.", e.display_name);
