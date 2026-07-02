@@ -33,13 +33,13 @@ try {
         $stmt = $pdo->prepare("INSERT INTO posts (user_id, content, image) VALUES (?, ?, ?)");
         $stmt->execute([$userId, $content, $image]);
 
-        // Dispatch notice to friends
+        // Fetch friends using positional parameters
         $stmtFriends = $pdo->prepare("
-            SELECT friend_id AS fid FROM friendships WHERE user_id = :uid AND status = 'accepted'
+            SELECT friend_id AS fid FROM friendships WHERE user_id = ? AND status = 'accepted'
             UNION
-            SELECT user_id AS fid FROM friendships WHERE friend_id = :uid AND status = 'accepted'
+            SELECT user_id AS fid FROM friendships WHERE friend_id = ? AND status = 'accepted'
         ");
-        $stmtFriends->execute(['uid' => $userId]);
+        $stmtFriends->execute([$userId, $userId]);
         $friends = $stmtFriends->fetchAll();
 
         $stmtUser = $pdo->prepare("SELECT display_name FROM users WHERE id = ?");
@@ -62,15 +62,15 @@ try {
             SELECT p.*, u.display_name, u.avatar 
             FROM posts p
             JOIN users u ON p.user_id = u.id 
-            WHERE p.user_id = :uid 
+            WHERE p.user_id = ? 
                OR p.user_id IN (
-                   SELECT friend_id FROM friendships WHERE user_id = :uid AND status = 'accepted'
+                   SELECT friend_id FROM friendships WHERE user_id = ? AND status = 'accepted'
                    UNION
-                   SELECT user_id FROM friendships WHERE friend_id = :uid AND status = 'accepted'
+                   SELECT user_id FROM friendships WHERE friend_id = ? AND status = 'accepted'
                )
             ORDER BY p.created_at DESC
         ");
-        $stmt->execute(['uid' => $userId]);
+        $stmt->execute([$userId, $userId, $userId]);
         echo json_encode($stmt->fetchAll());
         exit;
     }
@@ -81,15 +81,15 @@ try {
             SELECT e.*, u.display_name 
             FROM events e
             JOIN users u ON e.user_id = u.id 
-            WHERE e.user_id = :uid 
+            WHERE e.user_id = ? 
                OR e.user_id IN (
-                   SELECT friend_id FROM friendships WHERE user_id = :uid AND status = 'accepted'
+                   SELECT friend_id FROM friendships WHERE user_id = ? AND status = 'accepted'
                    UNION
-                   SELECT user_id FROM friendships WHERE friend_id = :uid AND status = 'accepted'
+                   SELECT user_id FROM friendships WHERE friend_id = ? AND status = 'accepted'
                )
             ORDER BY e.event_date ASC
         ");
-        $stmt->execute(['uid' => $userId]);
+        $stmt->execute([$userId, $userId, $userId]);
         echo json_encode($stmt->fetchAll());
         exit;
     }
@@ -109,13 +109,13 @@ try {
         $stmt = $pdo->prepare("INSERT INTO events (user_id, title, description, event_date) VALUES (?, ?, ?, ?)");
         $stmt->execute([$userId, $title, $desc, $date]);
 
-        // Dispatch calendar update notice to friends
+        // Fetch friends using positional parameters
         $stmtFriends = $pdo->prepare("
-            SELECT friend_id AS fid FROM friendships WHERE user_id = :uid AND status = 'accepted'
+            SELECT friend_id AS fid FROM friendships WHERE user_id = ? AND status = 'accepted'
             UNION
-            SELECT user_id AS fid FROM friendships WHERE friend_id = :uid AND status = 'accepted'
+            SELECT user_id AS fid FROM friendships WHERE friend_id = ? AND status = 'accepted'
         ");
-        $stmtFriends->execute(['uid' => $userId]);
+        $stmtFriends->execute([$userId, $userId]);
         $friends = $stmtFriends->fetchAll();
 
         $stmtUser = $pdo->prepare("SELECT display_name FROM users WHERE id = ?");
@@ -138,12 +138,12 @@ try {
             SELECT id, username, display_name, avatar 
             FROM users 
             WHERE id IN (
-                SELECT friend_id FROM friendships WHERE user_id = :uid AND status = 'accepted'
+                SELECT friend_id FROM friendships WHERE user_id = ? AND status = 'accepted'
                 UNION
-                SELECT user_id FROM friendships WHERE friend_id = :uid AND status = 'accepted'
+                SELECT user_id FROM friendships WHERE friend_id = ? AND status = 'accepted'
             )
         ");
-        $stmt->execute(['uid' => $userId]);
+        $stmt->execute([$userId, $userId]);
         echo json_encode($stmt->fetchAll());
         exit;
     }
@@ -152,11 +152,11 @@ try {
         $friendId = $_GET['friend_id'] ?? 0;
         $stmt = $pdo->prepare("
             SELECT * FROM messages 
-            WHERE (sender_id = :uid AND receiver_id = :fid) 
-               OR (sender_id = :fid AND receiver_id = :uid) 
+            WHERE (sender_id = ? AND receiver_id = ?) 
+               OR (sender_id = ? AND receiver_id = ?) 
             ORDER BY created_at ASC
         ");
-        $stmt->execute(['uid' => $userId, 'fid' => $friendId]);
+        $stmt->execute([$userId, $friendId, $friendId, $userId]);
         echo json_encode($stmt->fetchAll());
         exit;
     }
@@ -187,11 +187,11 @@ try {
     if ($action === 'get_all_users') {
         $stmt = $pdo->prepare("
             SELECT id, username, display_name, avatar,
-                (SELECT status FROM friendships WHERE (user_id = :uid AND friend_id = users.id) OR (user_id = users.id AND friend_id = :uid) LIMIT 1) AS friendship_status
+                (SELECT status FROM friendships WHERE (user_id = ? AND friend_id = users.id) OR (user_id = users.id AND friend_id = ?) LIMIT 1) AS friendship_status
             FROM users 
-            WHERE id != :uid
+            WHERE id != ?
         ");
-        $stmt->execute(['uid' => $userId]);
+        $stmt->execute([$userId, $userId, $userId]);
         echo json_encode($stmt->fetchAll());
         exit;
     }
@@ -205,8 +205,8 @@ try {
             exit;
         }
 
-        $stmt = $pdo->prepare("SELECT id FROM friendships WHERE (user_id = :uid AND friend_id = :tid) OR (user_id = :tid AND friend_id = :uid)");
-        $stmt->execute(['uid' => $userId, 'tid' => $targetId]);
+        $stmt = $pdo->prepare("SELECT id FROM friendships WHERE (user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?)");
+        $stmt->execute([$userId, $targetId, $targetId, $userId]);
         $existing = $stmt->fetch();
 
         if ($existing) {
