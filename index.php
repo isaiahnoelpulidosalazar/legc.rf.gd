@@ -85,92 +85,117 @@ if (is_dir($minigamesDir)) {
     <title>LeGC</title>
     <script src="https://isaiahnoelpulidosalazar.github.io/js/ECStyleSheet.js"></script>
     <style>
-      :root {
-         --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      }
-      body {
-         margin: 0;
-         font-family: var(--font-family);
-         background-color: var(--bg-body);
-         color: var(--text-main);
-         transition: background 0.25s ease, color 0.25s ease;
-      }
-      
-      /* LIGHT MODES */
-      body.light {
-         --bg-body: #f0f2f5;
-         --bg-card: #ffffff;
-         --text-main: #050505;
-         --text-sub: #65676b;
-         --border-color: #ced0d4;
-         --ec-bg: var(--bg-card);
-         --ec-border: var(--border-color);
-      }
-      body.light.blue {
-         --primary: #1877f2;
-         --primary-hover: #166fe5;
-         --primary-light: #e7f3ff;
-      }
-      body.light.purple {
-         --primary: #8a2be2;
-         --primary-hover: #7b1fa2;
-         --primary-light: #f3e5f5;
-      }
-      body.light.green {
-         --primary: #2ecc71;
-         --primary-hover: #27ae60;
-         --primary-light: #e8f8f5;
-      }
-      body.light.multi-sunset {
-         --primary: #ff4757;
-         --primary-hover: #ff6b81;
-         --primary-light: #ffe0e6;
-         background: linear-gradient(135deg, #f0f2f5 0%, #ffe3e8 100%) !important;
-      }
-      body.light.multi-ocean {
-         --primary: #00bcd4;
-         --primary-hover: #00acc1;
-         --primary-light: #e0f7fa;
-         background: linear-gradient(135deg, #f0f2f5 0%, #e0faff 100%) !important;
-      }
+        :root {
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            margin: 0;
+            font-family: var(--font-family);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            transition: background 0.25s ease, color 0.25s ease;
+        }
+        
+        /* LIGHT MODES */
+        body.light {
+            --bg-body: #f0f2f5;
+            --bg-card: #ffffff;
+            --text-main: #050505;
+            --text-sub: #65676b;
+            --border-color: #ced0d4;
+            --ec-bg: var(--bg-card);
+            --ec-border: var(--border-color);
+        }
+        body.light.blue {
+            --primary: #1877f2;
+            --primary-hover: #166fe5;
+            --primary-light: #e7f3ff;
+        }
+        body.light.purple {
+            --primary: #8a2be2;
+            --primary-hover: #7b1fa2;
+            --primary-light: #f3e5f5;
+        }
+        body.light.green {
+            --primary: #2ecc71;
+            --primary-hover: #27ae60;
+            --primary-light: #e8f8f5;
+        }
+        body.light.multi-sunset {
+            --primary: #ff4757;
+            --primary-hover: #ff6b81;
+            --primary-light: #ffe0e6;
+            background: linear-gradient(135deg, #f0f2f5 0%, #ffe3e8 100%) !important;
+        }
+        body.light.multi-ocean {
+            --primary: #00bcd4;
+            --primary-hover: #00acc1;
+            --primary-light: #e0f7fa;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e0faff 100%) !important;
+        }
 
-      /* DARK MODES */
-      body.dark {
-         --bg-body: #18191a;
-         --bg-card: #242526;
-         --text-main: #e4e6eb;
-         --text-sub: #b0b3b8;
-         --border-color: #3e4042;
-         --ec-bg: var(--bg-card);
-         --ec-border: var(--border-color);
-      }
-      body.dark.blue {
-         --primary: #2d88ff;
-         --primary-hover: #3578e5;
-         --primary-light: #263951;
-      }
-      body.dark.purple {
-         --primary: #a040ff;
-         --primary-hover: #8f2be2;
-         --primary-light: #3e2751;
-      }
-      body.dark.green {
-         --primary: #2ecc71;
-         --primary-hover: #2ecc71;
-         --primary-light: #1b3d2b;
-      }
-      body.dark.multi-sunset {
-         --primary: #ff4757;
-         --primary-hover: #ff6b81;
-         --primary-light: #4c1d24;
-         background: linear-gradient(135deg, #18191a 0%, #301b1e 100%) !important;
-      }
-      body.dark.multi-ocean {
-         --primary: #00bcd4;
-         --primary-hover: #00acc1;
-         --primary-light: #1b3d42;
-         background: linear-gradient(135deg, #18191a 0%, #162c30 100%) !important;
-      }
+        /* DARK MODES */
+        body.dark {
+            --bg-body: #18191a;
+            --bg-card: #242526;
+            --text-main: #e4e6eb;
+            --text-sub: #b0b3b8;
+            --border-color: #3e4042;
+            --ec-bg: var(--bg-card);
+            --ec-border: var(--border-color);
+        }
+        body.dark.blue {
+            --primary: #2d88ff;
+            --primary-hover: #3578e5;
+            --primary-light: #263951;
+        }
+        body.dark.purple {
+            --primary: #a040ff;
+            --primary-hover: #8f2be2;
+            --primary-light: #3e2751;
+        }
+        body.dark.green {
+            --primary: #2ecc71;
+            --primary-hover: #2ecc71;
+            --primary-light: #1b3d2b;
+        }
+        body.dark.multi-sunset {
+            --primary: #ff4757;
+            --primary-hover: #ff6b81;
+            --primary-light: #4c1d24;
+            background: linear-gradient(135deg, #18191a 0%, #301b1e 100%) !important;
+        }
+        body.dark.multi-ocean {
+            --primary: #00bcd4;
+            --primary-hover: #00acc1;
+            --primary-light: #1b3d42;
+            background: linear-gradient(135deg, #18191a 0%, #162c30 100%) !important;
+        }
+        .spinner {
+            width: 35px;
+            height: 35px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 40px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes modalBounce {
+            0% { transform: scale(0.85); opacity: 0; }
+            50% { transform: scale(1.03); opacity: 0.9; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-modal-bounce {
+            animation: modalBounce 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
+        }
+
+alert-modal        .width-200% { width: 200%; }
+        .width-50% { width: 50%; }
     </style>
 </head>
 <body class="light blue">
@@ -524,7 +549,7 @@ if (is_dir($minigamesDir)) {
 
     <!-- CALENDAR MODAL POPUP -->
     <div id="event-modal" style="display:none;" class="position-fixed top-0px left-0px width-100% height-100% backgroundColor-rgba(0,0,0,0.5) display-flex justifyContent-center alignItems-center zIndex-1000">
-        <div class="eccard padding-20px width-100% maxWidth-400px display-flex flexDirection-column gap-15px backgroundColor-var(--bg-card)">
+        <div class="eccard padding-20px width-100% maxWidth-400px display-flex flexDirection-column gap-15px backgroundColor-var(--bg-card) animate-modal-bounce">
             <div class="fontSize-18px fontWeight-bold color-var(--text-main)">Create New Event</div>
             <div class="display-flex flexDirection-column gap-5px">
                 <label class="color-var(--text-sub) fontSize-13px fontWeight-bold">Event Title</label>
@@ -546,11 +571,52 @@ if (is_dir($minigamesDir)) {
     </div>
 
     <div id="alert-modal" style="display:none;" class="position-fixed top-0px left-0px width-100% height-100% backgroundColor-rgba(0,0,0,0.5) display-flex justifyContent-center alignItems-center zIndex-2000">
-        <div class="eccard padding-25px width-100% maxWidth-400px display-flex flexDirection-column gap-15px backgroundColor-var(--bg-card) ecbounce-1">
+        <div class="eccard padding-25px width-100% maxWidth-400px display-flex flexDirection-column gap-15px backgroundColor-var(--bg-card) animate-modal-bounce">
             <div id="alert-modal-title" class="fontSize-18px fontWeight-bold color-var(--text-main)">Notification</div>
             <div id="alert-modal-message" class="color-var(--text-sub) fontSize-14px lineHeight-1.5" style="white-space: pre-wrap;"></div>
             <div class="display-flex justifyContent-flex-end">
                 <button id="alert-modal-ok" class="backgroundColor-var(--primary) color-white border-none padding-8px_20px borderRadius-6px fontWeight-bold cursor-pointer ecbounce-3">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="day-events-modal" style="display:none;" class="position-fixed top-0px left-0px width-100% height-100% backgroundColor-rgba(0,0,0,0.5) display-flex justifyContent-center alignItems-center zIndex-1000">
+        <div class="eccard width-100% maxWidth-400px backgroundColor-var(--bg-card) animate-modal-bounce overflow-hidden" style="height: 350px; position: relative;">
+            <!-- Sliding Track Wrapper -->
+            <div id="modal-slider" class="display-flex width-200% height-100%" style="transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateX(0);">
+                
+                <!-- Pane 1: Event List -->
+                <div class="width-50% height-100% padding-20px display-flex flexDirection-column boxSizing-border-box">
+                    <div class="display-flex justifyContent-space-between alignItems-center marginBottom-15px">
+                        <span id="day-modal-title" class="fontSize-18px fontWeight-bold color-var(--text-main)">Events</span>
+                        <button onclick="closeDayEventsModal()" class="backgroundColor-transparent border-none fontSize-18px cursor-pointer color-var(--text-sub) hover:color-var(--text-main) ecbounce-3">✕</button>
+                    </div>
+                    <!-- List container -->
+                    <div id="day-modal-list" class="flex-1 overflowY-auto display-flex flexDirection-column gap-10px"></div>
+                </div>
+                
+                <!-- Pane 2: Event Details -->
+                <div class="width-50% height-100% padding-20px display-flex flexDirection-column boxSizing-border-box backgroundColor-var(--bg-body)">
+                    <div class="display-flex alignItems-center gap-10px marginBottom-15px">
+                        <button onclick="slideBackToEventsList()" class="backgroundColor-transparent border-none fontSize-14px cursor-pointer color-var(--primary) fontWeight-bold hover:opacity-0.8 ecbounce-3">◀ Back</button>
+                        <span class="fontSize-15px fontWeight-bold color-var(--text-main)">Event Details</span>
+                    </div>
+                    <div class="flex-1 overflowY-auto display-flex flexDirection-column gap-12px">
+                        <div>
+                            <div class="fontSize-10px fontWeight-bold color-var(--text-sub) textTransform-uppercase">Title</div>
+                            <div id="detail-title" class="fontSize-14px fontWeight-bold color-var(--text-main) marginTop-3px"></div>
+                        </div>
+                        <div>
+                            <div class="fontSize-10px fontWeight-bold color-var(--text-sub) textTransform-uppercase">Host</div>
+                            <div id="detail-host" class="fontSize-12px color-var(--text-main) marginTop-3px"></div>
+                        </div>
+                        <div>
+                            <div class="fontSize-10px fontWeight-bold color-var(--text-sub) textTransform-uppercase">Description</div>
+                            <div id="detail-desc" class="fontSize-13px color-var(--text-sub) lineHeight-1.4 whitespace-pre-wrap marginTop-3px"></div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -587,7 +653,6 @@ if (is_dir($minigamesDir)) {
             setInterval(loadNotifications, 8000);
         });
 
-        // UNIVERSAL POPUP ALERT CONVERTER HELPER
         function showAlert(title, message, callback = null) {
             document.getElementById('alert-modal-title').innerText = title;
             document.getElementById('alert-modal-message').innerText = message;
@@ -600,16 +665,69 @@ if (is_dir($minigamesDir)) {
             };
         }
 
-        function showEventDetailPopup(title, description, host) {
-            showAlert("Event Details", `Title: ${title}\nDescription: ${description}\nHost: ${host}`);
+        // 1. DYNAMIC SLIDING DAILY LOGS FOR CALENDAR EVENTS
+        function openDayEventsModal(dateStr, day) {
+            const dateObj = new Date(dateStr + "T00:00:00");
+            const formattedDate = dateObj.toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
+            document.getElementById('day-modal-title').innerText = `Events on ${formattedDate}`;
+            
+            const listContainer = document.getElementById('day-modal-list');
+            listContainer.innerHTML = '';
+            
+            const dayEvents = loadedEvents.filter(e => e.event_date === dateStr);
+            
+            if (dayEvents.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="display-flex flexDirection-column alignItems-center justifyContent-center flex-1 color-var(--text-sub) gap-8px padding-20px">
+                        <span class="fontSize-32px">📅</span>
+                        <span class="fontSize-13px">No scheduled events today</span>
+                    </div>`;
+            } else {
+                dayEvents.forEach(e => {
+                    const item = document.createElement('div');
+                    item.className = 'padding-12px borderRadius-8px border-1px_solid_var(--border-color) hover:backgroundColor-var(--primary-light) cursor-pointer transition-0.2s ecbounce-2';
+                    item.onclick = (event) => {
+                        event.stopPropagation(); // Avoid day-cell click trigger loop
+                        showEventDetailSlide(e.title, e.description || "No description provided.", e.display_name);
+                    };
+                    item.innerHTML = `
+                        <div class="fontWeight-bold fontSize-14px color-var(--text-main) textOverflow-ellipsis overflow-hidden whiteSpace-nowrap">${escapeHtml(e.title)}</div>
+                        <div class="fontSize-11px color-var(--text-sub) marginTop-3px">by ${escapeHtml(e.display_name)}</div>
+                    `;
+                    listContainer.appendChild(item);
+                });
+            }
+            
+            // Reset sliding track to List view (Pane 1)
+            document.getElementById('modal-slider').style.transform = 'translateX(0)';
+            document.getElementById('day-events-modal').style.display = 'flex';
+            if (window.ECStyleSheet) window.ECStyleSheet.scan();
         }
 
-        // 1. SPA ROUTER SWITCH WITH SELECTIVE BOUNCE INJECTIONS
+        function closeDayEventsModal() {
+            document.getElementById('day-events-modal').style.display = 'none';
+        }
+
+        function showEventDetailSlide(title, description, host) {
+            document.getElementById('detail-title').innerText = title;
+            document.getElementById('detail-desc').innerText = description;
+            document.getElementById('detail-host').innerText = host;
+            
+            // Slide track to show Details (Pane 2)
+            document.getElementById('modal-slider').style.transform = 'translateX(-50%)';
+        }
+
+        function slideBackToEventsList() {
+            // Slide track back to show List (Pane 1)
+            document.getElementById('modal-slider').style.transform = 'translateX(0)';
+        }
+
+        // 2. SPA ROUTER SWITCH
         function showTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
             document.querySelectorAll('.sidebar-link').forEach(el => {
                 el.classList.remove('backgroundColor-var(--primary)', 'color-white');
-                el.classList.remove('ecbounce-2'); // Remove active navigation bounces
+                el.classList.remove('ecbounce-2');
             });
 
             const activeTab = document.getElementById('tab-' + tabName);
@@ -618,7 +736,7 @@ if (is_dir($minigamesDir)) {
             const activeLink = document.getElementById('link-' + tabName);
             if (activeLink) {
                 activeLink.classList.add('backgroundColor-var(--primary)', 'color-white');
-                activeLink.classList.add('ecbounce-2'); // Apply visual indicator bounds
+                activeLink.classList.add('ecbounce-2');
             }
 
             if (tabName !== 'messages' && chatInterval) {
@@ -718,11 +836,14 @@ if (is_dir($minigamesDir)) {
             });
         }
 
+        // 3. HOME POSTS LOADING SPINNER COMPILER
         function loadPosts() {
+            const container = document.getElementById('posts-container');
+            container.innerHTML = '<div class="spinner"></div>'; // Inject loading animation
+
             fetch('api.php?action=get_posts')
                 .then(res => res.json())
                 .then(posts => {
-                    const container = document.getElementById('posts-container');
                     container.innerHTML = '';
                     if (!posts || posts.length === 0) {
                         container.innerHTML = `
@@ -752,7 +873,10 @@ if (is_dir($minigamesDir)) {
                     });
                     if (window.ECStyleSheet) window.ECStyleSheet.scan();
                 })
-                .catch(err => console.error("Load posts error:", err));
+                .catch(err => {
+                    console.error("Load posts error:", err);
+                    container.innerHTML = '<p class="color-var(--text-sub) textAlign-center">Failed to fetch feed parameters.</p>';
+                });
         }
 
         function loadCalendar() {
@@ -772,6 +896,7 @@ if (is_dir($minigamesDir)) {
                 });
         }
 
+        // 4. RENDERING BOUNCY, CLICKABLE DAY CELLS
         function renderCalendar() {
             const grid = document.getElementById('calendar-grid');
             const title = document.getElementById('calendar-title');
@@ -788,6 +913,7 @@ if (is_dir($minigamesDir)) {
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const prevDaysInMonth = new Date(year, month, 0).getDate();
 
+            // Grey leading cells
             for (let i = firstDay - 1; i >= 0; i--) {
                 const cell = document.createElement('div');
                 cell.className = 'eccard minHeight-90px padding-10px opacity-0.4 backgroundColor-var(--bg-card)';
@@ -795,19 +921,23 @@ if (is_dir($minigamesDir)) {
                 grid.appendChild(cell);
             }
 
+            // Clickable Day Cells
             for (let day = 1; day <= daysInMonth; day++) {
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 const isToday = (new Date().getDate() === day && new Date().getMonth() === month && new Date().getFullYear() === year);
                 const highlight = isToday ? 'border-2px_solid_var(--primary)' : 'border-1px_solid_var(--border-color)';
 
                 const cell = document.createElement('div');
-                cell.className = `eccard minHeight-90px padding-8px display-flex flexDirection-column justifyContent-space-between backgroundColor-var(--bg-card) ${highlight}`;
+                // Added cursor-pointer & ecbounce-2 to the entire Day Cell
+                cell.className = `eccard minHeight-90px padding-8px display-flex flexDirection-column justifyContent-space-between backgroundColor-var(--bg-card) cursor-pointer ecbounce-2 ${highlight}`;
+                cell.onclick = () => openDayEventsModal(dateStr, day);
                 
                 let dayEvents = loadedEvents.filter(e => e.event_date === dateStr);
                 let eventsHtml = '';
                 dayEvents.forEach(e => {
+                    // Stripped clicks/interactive effects from nested event tags to preserve day-click triggers
                     eventsHtml += `
-                        <div onclick="showEventDetailPopup('${escapeHtml(e.title)}', '${escapeHtml(e.description || 'N/A')}', '${escapeHtml(e.display_name)}')" class="fontSize-10px backgroundColor-var(--primary) color-white padding-2px_4px borderRadius-4px cursor-pointer textOverflow-ellipsis whiteSpace-nowrap overflow-hidden hover:opacity-0.8 ecbounce-2" title="${escapeHtml(e.title)}">
+                        <div class="fontSize-10px backgroundColor-var(--primary) color-white padding-2px_4px borderRadius-4px textOverflow-ellipsis whiteSpace-nowrap overflow-hidden" title="${escapeHtml(e.title)}">
                             ${escapeHtml(e.title)}
                         </div>`;
                 });

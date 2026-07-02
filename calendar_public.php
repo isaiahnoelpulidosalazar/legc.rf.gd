@@ -31,24 +31,34 @@ if ($username) {
     <title><?php echo htmlspecialchars($user ? $user['display_name'] : 'Guest'); ?>'s Calendar - LeGC</title>
     <script src="https://isaiahnoelpulidosalazar.github.io/js/ECStyleSheet.js"></script>
     <style>
-      :root {
-         --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-         --primary: #1877f2;
-         --bg-body: #f0f2f5;
-         --bg-card: #ffffff;
-         --text-main: #050505;
-         --text-sub: #65676b;
-         --border-color: #ced0d4;
-         --ec-bg: var(--bg-card);
-         --ec-border: var(--border-color);
-      }
-      body {
-         margin: 0;
-         font-family: var(--font-family);
-         background-color: var(--bg-body);
-         color: var(--text-main);
-         padding: 40px 20px;
-      }
+        :root {
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --primary: #1877f2;
+            --bg-body: #f0f2f5;
+            --bg-card: #ffffff;
+            --text-main: #050505;
+            --text-sub: #65676b;
+            --border-color: #ced0d4;
+            --ec-bg: var(--bg-card);
+            --ec-border: var(--border-color);
+        }
+        body {
+            margin: 0;
+            font-family: var(--font-family);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            padding: 40px 20px;
+        }
+        @keyframes modalBounce {
+            0% { transform: scale(0.85); opacity: 0; }
+            50% { transform: scale(1.03); opacity: 0.9; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-modal-bounce {
+            animation: modalBounce 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
+        }
+        .width-200% { width: 200%; }
+        .width-50% { width: 50%; }
     </style>
 </head>
 <body class="light blue">
@@ -86,7 +96,7 @@ if ($username) {
     </div>
 
     <div id="alert-modal" style="display:none;" class="position-fixed top-0px left-0px width-100% height-100% backgroundColor-rgba(0,0,0,0.5) display-flex justifyContent-center alignItems-center zIndex-2000">
-        <div class="eccard padding-25px width-100% maxWidth-400px display-flex flexDirection-column gap-15px backgroundColor-var(--bg-card) ecbounce-1">
+        <div class="eccard padding-25px width-100% maxWidth-400px display-flex flexDirection-column gap-15px backgroundColor-var(--bg-card) animate-modal-bounce">
             <div id="alert-modal-title" class="fontSize-18px fontWeight-bold color-var(--text-main)">Notification</div>
             <div id="alert-modal-message" class="color-var(--text-sub) fontSize-14px lineHeight-1.5" style="white-space: pre-wrap;"></div>
             <div class="display-flex justifyContent-flex-end">
@@ -95,8 +105,49 @@ if ($username) {
         </div>
     </div>
 
+    <!-- PUBLIC VIEW SLIDING EVENT DETAIL MODAL -->
+    <div id="day-events-modal" style="display:none;" class="position-fixed top-0px left-0px width-100% height-100% backgroundColor-rgba(0,0,0,0.5) display-flex justifyContent-center alignItems-center zIndex-1000">
+        <div class="eccard width-100% maxWidth-400px backgroundColor-var(--bg-card) animate-modal-bounce overflow-hidden" style="height: 350px; position: relative;">
+            <div id="modal-slider" class="display-flex width-200% height-100%" style="transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateX(0);">
+                
+                <!-- Pane 1: Event List -->
+                <div class="width-50% height-100% padding-20px display-flex flexDirection-column boxSizing-border-box">
+                    <div class="display-flex justifyContent-space-between alignItems-center marginBottom-15px">
+                        <span id="day-modal-title" class="fontSize-18px fontWeight-bold color-var(--text-main)">Events</span>
+                        <button onclick="closeDayEventsModal()" class="backgroundColor-transparent border-none fontSize-18px cursor-pointer color-var(--text-sub) hover:color-var(--text-main) ecbounce-3">✕</button>
+                    </div>
+                    <div id="day-modal-list" class="flex-1 overflowY-auto display-flex flexDirection-column gap-10px"></div>
+                </div>
+                
+                <!-- Pane 2: Event Details -->
+                <div class="width-50% height-100% padding-20px display-flex flexDirection-column boxSizing-border-box backgroundColor-var(--bg-body)">
+                    <div class="display-flex alignItems-center gap-10px marginBottom-15px">
+                        <button onclick="slideBackToEventsList()" class="backgroundColor-transparent border-none fontSize-14px cursor-pointer color-var(--primary) fontWeight-bold hover:opacity-0.8 ecbounce-3">◀ Back</button>
+                        <span class="fontSize-15px fontWeight-bold color-var(--text-main)">Event Details</span>
+                    </div>
+                    <div class="flex-1 overflowY-auto display-flex flexDirection-column gap-12px">
+                        <div>
+                            <div class="fontSize-10px fontWeight-bold color-var(--text-sub) textTransform-uppercase">Title</div>
+                            <div id="detail-title" class="fontSize-14px fontWeight-bold color-var(--text-main) marginTop-3px"></div>
+                        </div>
+                        <div>
+                            <div class="fontSize-10px fontWeight-bold color-var(--text-sub) textTransform-uppercase">Host</div>
+                            <div id="detail-host" class="fontSize-12px color-var(--text-main) marginTop-3px"></div>
+                        </div>
+                        <div>
+                            <div class="fontSize-10px fontWeight-bold color-var(--text-sub) textTransform-uppercase">Description</div>
+                            <div id="detail-desc" class="fontSize-13px color-var(--text-sub) lineHeight-1.4 whitespace-pre-wrap marginTop-3px"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <script>
         const loadedEvents = <?php echo json_encode($events); ?>;
+        const hostDisplayName = <?php echo json_encode($user ? $user['display_name'] : ''); ?>;
         let calendarDate = new Date();
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -112,8 +163,57 @@ if ($username) {
             };
         }
 
-        function showEventDetailPopup(title, description) {
-            showAlert("Event Details", `Title: ${title}\nDescription: ${description}`);
+        // PUBLIC SLIDING CONTROLLER
+        function openDayEventsModal(dateStr, day) {
+            const dateObj = new Date(dateStr + "T00:00:00");
+            const formattedDate = dateObj.toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
+            document.getElementById('day-modal-title').innerText = `Events on ${formattedDate}`;
+            
+            const listContainer = document.getElementById('day-modal-list');
+            listContainer.innerHTML = '';
+            
+            const dayEvents = loadedEvents.filter(e => e.event_date === dateStr);
+            
+            if (dayEvents.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="display-flex flexDirection-column alignItems-center justifyContent-center flex-1 color-var(--text-sub) gap-8px padding-20px">
+                        <span class="fontSize-32px">📅</span>
+                        <span class="fontSize-13px">No scheduled events today</span>
+                    </div>`;
+            } else {
+                dayEvents.forEach(e => {
+                    const item = document.createElement('div');
+                    item.className = 'padding-12px borderRadius-8px border-1px_solid_var(--border-color) hover:backgroundColor-var(--primary-light) cursor-pointer transition-0.2s ecbounce-2';
+                    item.onclick = (event) => {
+                        event.stopPropagation();
+                        showEventDetailSlide(e.title, e.description || "No description provided.", hostDisplayName);
+                    };
+                    item.innerHTML = `
+                        <div class="fontWeight-bold fontSize-14px color-var(--text-main) textOverflow-ellipsis overflow-hidden whiteSpace-nowrap">${escapeHtml(e.title)}</div>
+                        <div class="fontSize-11px color-var(--text-sub) marginTop-3px">by ${escapeHtml(hostDisplayName)}</div>
+                    `;
+                    listContainer.appendChild(item);
+                });
+            }
+            
+            document.getElementById('modal-slider').style.transform = 'translateX(0)';
+            document.getElementById('day-events-modal').style.display = 'flex';
+            if (window.ECStyleSheet) window.ECStyleSheet.scan();
+        }
+
+        function closeDayEventsModal() {
+            document.getElementById('day-events-modal').style.display = 'none';
+        }
+
+        function showEventDetailSlide(title, description, host) {
+            document.getElementById('detail-title').innerText = title;
+            document.getElementById('detail-desc').innerText = description;
+            document.getElementById('detail-host').innerText = host;
+            document.getElementById('modal-slider').style.transform = 'translateX(-50%)';
+        }
+
+        function slideBackToEventsList() {
+            document.getElementById('modal-slider').style.transform = 'translateX(0)';
         }
 
         function renderCalendar() {
@@ -145,13 +245,14 @@ if ($username) {
                 const highlight = isToday ? 'border-2px_solid_var(--primary)' : 'border-1px_solid_var(--border-color)';
 
                 const cell = document.createElement('div');
-                cell.className = `eccard minHeight-90px padding-8px display-flex flexDirection-column justifyContent-space-between backgroundColor-var(--bg-card) ${highlight}`;
+                cell.className = `eccard minHeight-90px padding-8px display-flex flexDirection-column justifyContent-space-between backgroundColor-var(--bg-card) cursor-pointer ecbounce-2 ${highlight}`;
+                cell.onclick = () => openDayEventsModal(dateStr, day);
                 
                 let dayEvents = loadedEvents.filter(e => e.event_date === dateStr);
                 let eventsHtml = '';
                 dayEvents.forEach(e => {
                     eventsHtml += `
-                        <div onclick="showEventDetailPopup('${escapeHtml(e.title)}', '${escapeHtml(e.description || 'N/A')}')" class="fontSize-10px backgroundColor-var(--primary) color-white padding-2px_4px borderRadius-4px cursor-pointer textOverflow-ellipsis whiteSpace-nowrap overflow-hidden hover:opacity-0.8 ecbounce-2" title="${escapeHtml(e.title)}">
+                        <div class="fontSize-10px backgroundColor-var(--primary) color-white padding-2px_4px borderRadius-4px textOverflow-ellipsis whiteSpace-nowrap overflow-hidden" title="${escapeHtml(e.title)}">
                             ${escapeHtml(e.title)}
                         </div>`;
                 });
