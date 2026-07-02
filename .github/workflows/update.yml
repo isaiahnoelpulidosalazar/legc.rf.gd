@@ -9,6 +9,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      - name: Create db.php
+        run: |
+          cat << 'EOF' > db.php
+          ${{ secrets.DB_PHP }}
+          EOF
       - name: FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:
