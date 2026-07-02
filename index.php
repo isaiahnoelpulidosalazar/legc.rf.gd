@@ -332,7 +332,7 @@ if (is_dir($minigamesDir)) {
                             <div class="display-flex justifyContent-space-between alignItems-center flexWrap-wrap gap-10px">
                                 <label class="display-flex alignItems-center gap-8px cursor-pointer color-var(--primary) fontWeight-600 hover:opacity-0.8 transition-0.2s fontSize-14px">
                                     📷 Add Image
-                                    <input type="file" id="post-image-input" accept="image/*" class="display-none" onchange="previewPostImage(event)">
+                                    <input type="file" id="post-image-input" accept="image/png, image/jpeg, image/webp" class="display-none" onchange="previewPostImage(event)">
                                 </label>
                                 <button onclick="submitPost()" class="backgroundColor-var(--primary) hover:backgroundColor-var(--primary-hover) color-white border-none padding-8px_20px borderRadius-6px fontWeight-bold cursor-pointer transition-0.2s ecbounce-3">Post</button>
                             </div>
@@ -436,7 +436,7 @@ if (is_dir($minigamesDir)) {
                                 <div class="display-flex flexDirection-column gap-5px">
                                     <label class="backgroundColor-var(--primary) color-white padding-8px_16px borderRadius-6px cursor-pointer fontSize-13px fontWeight-bold ecbounce-3">
                                         Upload New Avatar
-                                        <input type="file" id="profile-avatar-input" accept="image/*" class="display-none" onchange="previewProfileAvatar(event)">
+                                        <input type="file" id="profile-avatar-input" accept="image/png, image/jpeg, image/webp" class="display-none" onchange="previewProfileAvatar(event)">
                                     </label>
                                     <span class="color-var(--text-sub) fontSize-11px">Auto-saves to database in base64 format</span>
                                 </div>
@@ -632,11 +632,16 @@ if (is_dir($minigamesDir)) {
             return 'blue';
         }
 
-        function loadSettingsView() {}
+        const SUPPORTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
         function previewPostImage(event) {
             const file = event.target.files[0];
             if (file) {
+                if (!SUPPORTED_IMAGE_TYPES.includes(file.type)) {
+                    alert("Unsupported image type! Please upload PNG, JPG, or WEBP.");
+                    event.target.value = "";
+                    return;
+                }
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     postBase64Image = e.target.result;
@@ -975,6 +980,11 @@ if (is_dir($minigamesDir)) {
         function previewProfileAvatar(event) {
             const file = event.target.files[0];
             if (file) {
+                if (!SUPPORTED_IMAGE_TYPES.includes(file.type)) {
+                    alert("Unsupported image type! Please upload PNG, JPG, or WEBP.");
+                    event.target.value = "";
+                    return;
+                }
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     profileBase64Avatar = e.target.result;
@@ -1099,7 +1109,8 @@ if (is_dir($minigamesDir)) {
         // HELPER LOGIC
         function getDefaultAvatar(name) {
             const char = name ? name.charAt(0).toUpperCase() : 'U';
-            return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="%231877f2"/><text x="50" y="62" font-family="sans-serif" font-size="40" font-weight="bold" fill="white" text-anchor="middle">${char}</text></svg>`;
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="%231877f2"/><text x="50" y="65" font-family="sans-serif" font-size="45" font-weight="bold" fill="white" text-anchor="middle">${char}</text></svg>`;
+            return `data:image/svg+xml;base64,${btoa(svg)}`;
         }
 
         function escapeHtml(text) {

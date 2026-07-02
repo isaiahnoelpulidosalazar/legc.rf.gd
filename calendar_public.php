@@ -4,6 +4,7 @@ require_once 'db.php';
 $username = $_GET['user'] ?? '';
 $user = null;
 $events = [];
+$default_avatar = '';
 
 if ($username) {
     $stmt = $pdo->prepare("SELECT id, display_name, avatar FROM users WHERE username = ?");
@@ -14,6 +15,11 @@ if ($username) {
         $stmtEvents = $pdo->prepare("SELECT * FROM events WHERE user_id = ? ORDER BY event_date ASC");
         $stmtEvents->execute([$user['id']]);
         $events = $stmtEvents->fetchAll();
+        
+        // Base64 Safe SVG Dynamic Avatar Generation
+        $char = strtoupper(substr($user['display_name'], 0, 1));
+        $svg = '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="%231877f2"/><text x="50" y="65" font-family="sans-serif" font-size="45" font-weight="bold" fill="white" text-anchor="middle">' . $char . '</text></svg>';
+        $default_avatar = 'data:image/svg+xml;base64,' . base64_encode($svg);
     }
 }
 ?>
@@ -49,10 +55,10 @@ if ($username) {
     <div class="width-100% maxWidth-800px margin-0_auto">
         <?php if ($user): ?>
             <div class="eccard padding-20px marginBottom-20px display-flex alignItems-center gap-15px backgroundColor-var(--bg-card)">
-                <img src="<?php echo $user['avatar'] ?: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="%231877f2"/><text x="50" y="62" font-family="sans-serif" font-size="40" font-weight="bold" fill="white" text-anchor="middle">' . strtoupper(substr($user['display_name'], 0, 1)) . '</text></svg>'; ?>" class="width-60px height-60px borderRadius-50% objectFit-cover border-1px_solid_var(--border-color)">
+                <img src="<?php echo $user['avatar'] ?: $default_avatar; ?>" class="width-60px height-60px borderRadius-50% objectFit-cover border-1px_solid_var(--border-color)">
                 <div class="display-flex flexDirection-column">
-                    <h1 class="fontSize-22px fontWeight-bold color-var(--text-main) margin-0px"><?php echo htmlspecialchars($user['display_name']); ?>'s Calendar</h1>
-                    <span class="color-var(--text-sub) fontSize-14px">Public calendar view shared on LeGC</span>
+                   <h1 class="fontSize-22px fontWeight-bold color-var(--text-main) margin-0px"><?php echo htmlspecialchars($user['display_name']); ?>'s Calendar</h1>
+                   <span class="color-var(--text-sub) fontSize-14px">Public calendar view shared on LeGC</span>
                 </div>
             </div>
 
