@@ -545,6 +545,16 @@ if (is_dir($minigamesDir)) {
         </div>
     </div>
 
+    <div id="alert-modal" style="display:none;" class="position-fixed top-0px left-0px width-100% height-100% backgroundColor-rgba(0,0,0,0.5) display-flex justifyContent-center alignItems-center zIndex-2000">
+        <div class="eccard padding-25px width-100% maxWidth-400px display-flex flexDirection-column gap-15px backgroundColor-var(--bg-card) ecbounce-1">
+            <div id="alert-modal-title" class="fontSize-18px fontWeight-bold color-var(--text-main)">Notification</div>
+            <div id="alert-modal-message" class="color-var(--text-sub) fontSize-14px lineHeight-1.5" style="white-space: pre-wrap;"></div>
+            <div class="display-flex justifyContent-flex-end">
+                <button id="alert-modal-ok" class="backgroundColor-var(--primary) color-white border-none padding-8px_20px borderRadius-6px fontWeight-bold cursor-pointer ecbounce-3">OK</button>
+            </div>
+        </div>
+    </div>
+
     <!-- DATA EXPORTS TO SPA CONTROLLER -->
     <script>
         const currentUser = <?php echo json_encode([
@@ -577,17 +587,39 @@ if (is_dir($minigamesDir)) {
             setInterval(loadNotifications, 8000);
         });
 
+        // UNIVERSAL POPUP ALERT CONVERTER HELPER
+        function showAlert(title, message, callback = null) {
+            document.getElementById('alert-modal-title').innerText = title;
+            document.getElementById('alert-modal-message').innerText = message;
+            document.getElementById('alert-modal').style.display = 'flex';
+            
+            const okBtn = document.getElementById('alert-modal-ok');
+            okBtn.onclick = () => {
+                document.getElementById('alert-modal').style.display = 'none';
+                if (callback) callback();
+            };
+        }
+
+        function showEventDetailPopup(title, description, host) {
+            showAlert("Event Details", `Title: ${title}\nDescription: ${description}\nHost: ${host}`);
+        }
+
+        // 1. SPA ROUTER SWITCH WITH SELECTIVE BOUNCE INJECTIONS
         function showTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
             document.querySelectorAll('.sidebar-link').forEach(el => {
                 el.classList.remove('backgroundColor-var(--primary)', 'color-white');
+                el.classList.remove('ecbounce-2'); // Remove active navigation bounces
             });
 
             const activeTab = document.getElementById('tab-' + tabName);
             if (activeTab) activeTab.style.display = 'block';
 
             const activeLink = document.getElementById('link-' + tabName);
-            if (activeLink) activeLink.classList.add('backgroundColor-var(--primary)', 'color-white');
+            if (activeLink) {
+                activeLink.classList.add('backgroundColor-var(--primary)', 'color-white');
+                activeLink.classList.add('ecbounce-2'); // Apply visual indicator bounds
+            }
 
             if (tabName !== 'messages' && chatInterval) {
                 clearInterval(chatInterval);
@@ -632,13 +664,15 @@ if (is_dir($minigamesDir)) {
             return 'blue';
         }
 
+        function loadSettingsView() {}
+
         const SUPPORTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
         function previewPostImage(event) {
             const file = event.target.files[0];
             if (file) {
                 if (!SUPPORTED_IMAGE_TYPES.includes(file.type)) {
-                    alert("Unsupported image type! Please upload PNG, JPG, or WEBP.");
+                    showAlert("Format Error", "Unsupported file type! Please upload PNG, JPG, or WEBP.");
                     event.target.value = "";
                     return;
                 }
@@ -658,7 +692,6 @@ if (is_dir($minigamesDir)) {
             document.getElementById('post-image-preview-container').classList.add('display-none');
         }
 
-        // FIXED SUBMITPOST: PROMPT ACTION ERRORS SECURELY
         function submitPost() {
             const textEl = document.getElementById('post-content');
             const content = textEl.value.trim();
@@ -676,12 +709,12 @@ if (is_dir($minigamesDir)) {
                     clearPostImage();
                     loadPosts();
                 } else {
-                    alert("Unable to post: " + (res.error || "Unknown backend error."));
+                    showAlert("Action Denied", "Unable to post: " + (res.error || "Unknown backend mismatch."));
                 }
             })
             .catch(err => {
                 console.error("Post exception:", err);
-                alert("Network communication error during submission.");
+                showAlert("Network Error", "Unable to connect to the database host.");
             });
         }
 
@@ -703,7 +736,7 @@ if (is_dir($minigamesDir)) {
                         const avatar = p.avatar || getDefaultAvatar(p.display_name);
                         const imgNode = p.image ? `<img src="${p.image}" class="width-100% borderRadius-8px maxHeight-350px objectFit-cover marginTop-10px">` : '';
                         const postCard = document.createElement('div');
-                        postCard.className = 'eccard padding-20px display-flex flexDirection-column gap-12px backgroundColor-var(--bg-card)';
+                        postCard.className = 'eccard padding-20px display-flex flexDirection-column gap-12px backgroundColor-var(--bg-card) ecbounce-1';
                         postCard.innerHTML = `
                             <div class="display-flex alignItems-center gap-10px">
                                 <img src="${avatar}" class="width-40px height-40px borderRadius-50% objectFit-cover border-1px_solid_var(--border-color)">
@@ -722,7 +755,6 @@ if (is_dir($minigamesDir)) {
                 .catch(err => console.error("Load posts error:", err));
         }
 
-        // FIXED LOADCALENDAR: GRACEFULLY FALLBACK TO RENDER GRID LAYOUT ON FAILURE
         function loadCalendar() {
             fetch('api.php?action=get_events')
                 .then(res => {
@@ -756,7 +788,6 @@ if (is_dir($minigamesDir)) {
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const prevDaysInMonth = new Date(year, month, 0).getDate();
 
-            // Leading grey boxes
             for (let i = firstDay - 1; i >= 0; i--) {
                 const cell = document.createElement('div');
                 cell.className = 'eccard minHeight-90px padding-10px opacity-0.4 backgroundColor-var(--bg-card)';
@@ -764,7 +795,6 @@ if (is_dir($minigamesDir)) {
                 grid.appendChild(cell);
             }
 
-            // Active days boxes
             for (let day = 1; day <= daysInMonth; day++) {
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 const isToday = (new Date().getDate() === day && new Date().getMonth() === month && new Date().getFullYear() === year);
@@ -777,7 +807,7 @@ if (is_dir($minigamesDir)) {
                 let eventsHtml = '';
                 dayEvents.forEach(e => {
                     eventsHtml += `
-                        <div onclick="alert('Event: ${escapeHtml(e.title)}\\nDescription: ${escapeHtml(e.description || 'N/A')}\\nHost: ${escapeHtml(e.display_name)}')" class="fontSize-10px backgroundColor-var(--primary) color-white padding-2px_4px borderRadius-4px cursor-pointer textOverflow-ellipsis whiteSpace-nowrap overflow-hidden hover:opacity-0.8" title="${escapeHtml(e.title)}">
+                        <div onclick="showEventDetailPopup('${escapeHtml(e.title)}', '${escapeHtml(e.description || 'N/A')}', '${escapeHtml(e.display_name)}')" class="fontSize-10px backgroundColor-var(--primary) color-white padding-2px_4px borderRadius-4px cursor-pointer textOverflow-ellipsis whiteSpace-nowrap overflow-hidden hover:opacity-0.8 ecbounce-2" title="${escapeHtml(e.title)}">
                             ${escapeHtml(e.title)}
                         </div>`;
                 });
@@ -799,14 +829,13 @@ if (is_dir($minigamesDir)) {
         function openAddEventModal() { document.getElementById('event-modal').style.display = 'flex'; }
         function closeAddEventModal() { document.getElementById('event-modal').style.display = 'none'; }
         
-        // FIXED SUBMITADDEVENT: ERROR BOUNDS CHECK AND USER-FEEDBACK PROMPT ON FAILURE
         function submitAddEvent() {
             const title = document.getElementById('event-title').value.trim();
             const description = document.getElementById('event-desc').value.trim();
             const date = document.getElementById('event-date').value;
 
             if (!title || !date) {
-                alert("Event title and date are required.");
+                showAlert("Field Error", "Event title and date are required parameters.");
                 return;
             }
 
@@ -824,16 +853,15 @@ if (is_dir($minigamesDir)) {
                     document.getElementById('event-date').value = '';
                     loadCalendar();
                 } else {
-                    alert("Unable to save event: " + (res.error || "Unknown backend mismatch."));
+                    showAlert("Database Error", "Unable to write schedule parameters: " + (res.error || "Unknown backend mismatch."));
                 }
             })
             .catch(err => {
                 console.error("Event creation error:", err);
-                alert("Network error occurred when saving event.");
+                showAlert("Network Error", "Unable to transmit schedule parameters.");
             });
         }
 
-        // 5. DIRECT MESSAGES CONTROL
         function loadChats() {
             fetch('api.php?action=get_friends_list')
                 .then(res => res.json())
@@ -850,7 +878,7 @@ if (is_dir($minigamesDir)) {
                         const cardBg = isSelected ? 'backgroundColor-var(--primary-light)' : 'hover:backgroundColor-var(--bg-body)';
                         
                         const item = document.createElement('div');
-                        item.className = `display-flex alignItems-center gap-10px padding-10px borderRadius-8px cursor-pointer transition-0.2s ${cardBg}`;
+                        item.className = `display-flex alignItems-center gap-10px padding-10px borderRadius-8px cursor-pointer transition-0.2s ecbounce-2 ${cardBg}`;
                         item.onclick = () => selectChat(f.id, f.display_name, avatar);
                         item.innerHTML = `
                             <img src="${avatar}" class="width-36px height-36px borderRadius-50% objectFit-cover border-1px_solid_var(--border-color)">
@@ -898,7 +926,7 @@ if (is_dir($minigamesDir)) {
                         const border = isSender ? '' : 'border-1px_solid_var(--border-color)';
 
                         const bubble = document.createElement('div');
-                        bubble.className = `${align} ${bg} ${border} padding-10px_14px borderRadius-15px maxWidth-70% fontSize-13px wordBreak-break-word`;
+                        bubble.className = `${align} ${bg} ${border} padding-10px_14px borderRadius-15px maxWidth-70% fontSize-13px wordBreak-break-word ecbounce-1`;
                         bubble.innerText = m.message;
                         container.appendChild(bubble);
                     });
@@ -933,7 +961,6 @@ if (is_dir($minigamesDir)) {
             if (e.key === 'Enter') sendChatMessage();
         }
 
-        // 6. MINIGAMES CONTROL
         function loadMinigamesView() {
             const grid = document.getElementById('minigames-container');
             grid.innerHTML = '';
@@ -970,7 +997,6 @@ if (is_dir($minigamesDir)) {
             document.getElementById('minigames-container').style.display = 'grid';
         }
 
-        // 7. PROFILE AND FRIEND FINDER SYSTEM
         function loadProfileView() {
             document.getElementById('profile-display-name').value = currentUser.display_name;
             document.getElementById('profile-avatar-preview').src = currentUser.avatar || getDefaultAvatar(currentUser.display_name);
@@ -981,7 +1007,7 @@ if (is_dir($minigamesDir)) {
             const file = event.target.files[0];
             if (file) {
                 if (!SUPPORTED_IMAGE_TYPES.includes(file.type)) {
-                    alert("Unsupported image type! Please upload PNG, JPG, or WEBP.");
+                    showAlert("Format Error", "Unsupported file type! Please upload PNG, JPG, or WEBP.");
                     event.target.value = "";
                     return;
                 }
@@ -1008,8 +1034,9 @@ if (is_dir($minigamesDir)) {
             .then(res => res.json())
             .then(res => {
                 if (res.success) {
-                    alert('Profile configuration updated. Refreshing...');
-                    window.location.reload();
+                    showAlert("Settings Saved", "Profile parameters updated successfully.", () => {
+                        window.location.reload();
+                    });
                 }
             });
         }
@@ -1031,7 +1058,7 @@ if (is_dir($minigamesDir)) {
                         const color = isFriend ? 'backgroundColor-red' : 'backgroundColor-var(--primary)';
 
                         const card = document.createElement('div');
-                        card.className = 'eccard padding-12px display-flex alignItems-center justifyContent-space-between backgroundColor-var(--bg-card)';
+                        card.className = 'eccard padding-12px display-flex alignItems-center justifyContent-space-between backgroundColor-var(--bg-card) ecbounce-1';
                         card.innerHTML = `
                             <div class="display-flex alignItems-center gap-10px">
                                 <img src="${avatar}" class="width-36px height-36px borderRadius-50% objectFit-cover border-1px_solid_var(--border-color)">
@@ -1060,7 +1087,6 @@ if (is_dir($minigamesDir)) {
             });
         }
 
-        // 8. NOTIFICATION PIPELINE
         function loadNotifications() {
             fetch('api.php?action=get_notifications')
                 .then(res => res.json())
@@ -1084,7 +1110,7 @@ if (is_dir($minigamesDir)) {
                     notifs.forEach(n => {
                         const styleClass = n.is_read == 0 ? 'backgroundColor-var(--primary-light)' : 'backgroundColor-transparent';
                         const item = document.createElement('div');
-                        item.className = `padding-8px borderRadius-6px fontSize-12px color-var(--text-main) ${styleClass} borderBottom-1px_solid_var(--border-color)`;
+                        item.className = `padding-8px borderRadius-6px fontSize-12px color-var(--text-main) ${styleClass} borderBottom-1px_solid_var(--border-color) ecbounce-1`;
                         item.innerText = n.content;
                         list.appendChild(item);
                     });
@@ -1106,7 +1132,6 @@ if (is_dir($minigamesDir)) {
             }
         }
 
-        // HELPER LOGIC
         function getDefaultAvatar(name) {
             const char = name ? name.charAt(0).toUpperCase() : 'U';
             const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="%231877f2"/><text x="50" y="65" font-family="sans-serif" font-size="45" font-weight="bold" fill="white" text-anchor="middle">${char}</text></svg>`;

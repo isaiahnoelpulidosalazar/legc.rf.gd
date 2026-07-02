@@ -85,7 +85,16 @@ if ($username) {
         <?php endif; ?>
     </div>
 
-    <script src="ECStyleSheet.js"></script>
+    <div id="alert-modal" style="display:none;" class="position-fixed top-0px left-0px width-100% height-100% backgroundColor-rgba(0,0,0,0.5) display-flex justifyContent-center alignItems-center zIndex-2000">
+        <div class="eccard padding-25px width-100% maxWidth-400px display-flex flexDirection-column gap-15px backgroundColor-var(--bg-card) ecbounce-1">
+            <div id="alert-modal-title" class="fontSize-18px fontWeight-bold color-var(--text-main)">Notification</div>
+            <div id="alert-modal-message" class="color-var(--text-sub) fontSize-14px lineHeight-1.5" style="white-space: pre-wrap;"></div>
+            <div class="display-flex justifyContent-flex-end">
+                <button id="alert-modal-ok" class="backgroundColor-var(--primary) color-white border-none padding-8px_20px borderRadius-6px fontWeight-bold cursor-pointer ecbounce-3">OK</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const loadedEvents = <?php echo json_encode($events); ?>;
         let calendarDate = new Date();
@@ -93,6 +102,19 @@ if ($username) {
         window.addEventListener('DOMContentLoaded', () => {
             renderCalendar();
         });
+
+        function showAlert(title, message) {
+            document.getElementById('alert-modal-title').innerText = title;
+            document.getElementById('alert-modal-message').innerText = message;
+            document.getElementById('alert-modal').style.display = 'flex';
+            document.getElementById('alert-modal-ok').onclick = () => {
+                document.getElementById('alert-modal').style.display = 'none';
+            };
+        }
+
+        function showEventDetailPopup(title, description) {
+            showAlert("Event Details", `Title: ${title}\nDescription: ${description}`);
+        }
 
         function renderCalendar() {
             const grid = document.getElementById('calendar-grid');
@@ -110,7 +132,6 @@ if ($username) {
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const prevDaysInMonth = new Date(year, month, 0).getDate();
 
-            // Fill empty leading calendar boxes
             for (let i = firstDay - 1; i >= 0; i--) {
                 const cell = document.createElement('div');
                 cell.className = 'eccard minHeight-90px padding-10px opacity-0.4 backgroundColor-var(--bg-card)';
@@ -118,7 +139,6 @@ if ($username) {
                 grid.appendChild(cell);
             }
 
-            // Fill active calendar month boxes
             for (let day = 1; day <= daysInMonth; day++) {
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 const isToday = (new Date().getDate() === day && new Date().getMonth() === month && new Date().getFullYear() === year);
@@ -131,7 +151,7 @@ if ($username) {
                 let eventsHtml = '';
                 dayEvents.forEach(e => {
                     eventsHtml += `
-                        <div onclick="alert('Event: ${escapeHtml(e.title)}\\nDescription: ${escapeHtml(e.description || 'N/A')}')" class="fontSize-10px backgroundColor-var(--primary) color-white padding-2px_4px borderRadius-4px cursor-pointer textOverflow-ellipsis whiteSpace-nowrap overflow-hidden hover:opacity-0.8" title="${escapeHtml(e.title)}">
+                        <div onclick="showEventDetailPopup('${escapeHtml(e.title)}', '${escapeHtml(e.description || 'N/A')}')" class="fontSize-10px backgroundColor-var(--primary) color-white padding-2px_4px borderRadius-4px cursor-pointer textOverflow-ellipsis whiteSpace-nowrap overflow-hidden hover:opacity-0.8 ecbounce-2" title="${escapeHtml(e.title)}">
                             ${escapeHtml(e.title)}
                         </div>`;
                 });
