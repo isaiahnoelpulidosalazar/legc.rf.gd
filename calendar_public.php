@@ -29,6 +29,7 @@ if ($username) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($user ? $user['display_name'] : 'Guest'); ?>'s Calendar - LeGC</title>
+    <script src="https://isaiahnoelpulidosalazar.github.io/js/ECStyleSheet.js"></script>
     <style>
       :root {
          --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
