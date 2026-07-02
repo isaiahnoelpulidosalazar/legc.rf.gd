@@ -83,6 +83,7 @@ if (is_dir($minigamesDir)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LeGC</title>
+    <script src="https://isaiahnoelpulidosalazar.github.io/js/ECStyleSheet.js"></script>
     <style>
       :root {
          --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -171,7 +172,6 @@ if (is_dir($minigamesDir)) {
          background: linear-gradient(135deg, #18191a 0%, #162c30 100%) !important;
       }
     </style>
-    <script src="https://isaiahnoelpulidosalazar.github.io/js/ECStyleSheet.js"></script>
 </head>
 <body class="light blue">
 
@@ -569,22 +569,14 @@ if (is_dir($minigamesDir)) {
         let loadedEvents = [];
 
         window.addEventListener('DOMContentLoaded', () => {
-            // Apply Database Saved Theme state instantly
             applyThemeState(currentUser.theme_mode, currentUser.theme_color);
-            
-            // Sync user UI assets in header top bar
             document.getElementById('topbar-avatar').src = currentUser.avatar || getDefaultAvatar(currentUser.display_name);
             document.getElementById('topbar-name').innerText = currentUser.display_name;
-            
-            // Open default home view
             showTab('home');
-
-            // Set up cyclic notification processor
             loadNotifications();
             setInterval(loadNotifications, 8000);
         });
 
-        // 1. SPA ROUTER SWITCH
         function showTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
             document.querySelectorAll('.sidebar-link').forEach(el => {
@@ -597,13 +589,11 @@ if (is_dir($minigamesDir)) {
             const activeLink = document.getElementById('link-' + tabName);
             if (activeLink) activeLink.classList.add('backgroundColor-var(--primary)', 'color-white');
 
-            // Tear-down active chat poller when navigating away
             if (tabName !== 'messages' && chatInterval) {
                 clearInterval(chatInterval);
                 activeChatFriendId = null;
             }
 
-            // Sync dynamic resources per active view
             if (tabName === 'home') loadPosts();
             else if (tabName === 'activities') loadCalendar();
             else if (tabName === 'messages') loadChats();
@@ -614,13 +604,10 @@ if (is_dir($minigamesDir)) {
             if (window.ECStyleSheet) window.ECStyleSheet.scan();
         }
 
-        // 2. THEME PERSISTENCE CONTROL
         function applyThemeState(mode, color) {
             document.body.className = `${mode} ${color}`;
-            
             const modeRadio = document.querySelector(`input[name="theme_mode"][value="${mode}"]`);
             if (modeRadio) modeRadio.checked = true;
-
             const colorRadio = document.querySelector(`input[name="theme_color"][value="${color}"]`);
             if (colorRadio) colorRadio.checked = true;
         }
@@ -628,7 +615,6 @@ if (is_dir($minigamesDir)) {
         function saveLocalTheme(mode, color) {
             let currentMode = mode || (document.body.classList.contains('dark') ? 'dark' : 'light');
             let currentColor = color || getActiveThemeColor();
-
             applyThemeState(currentMode, currentColor);
 
             fetch('api.php?action=update_settings', {
@@ -646,11 +632,8 @@ if (is_dir($minigamesDir)) {
             return 'blue';
         }
 
-        function loadSettingsView() {
-            // Checked fields handle auto syncing
-        }
+        function loadSettingsView() {}
 
-        // 3. HOME POSTS CONTROL
         function previewPostImage(event) {
             const file = event.target.files[0];
             if (file) {
@@ -670,6 +653,7 @@ if (is_dir($minigamesDir)) {
             document.getElementById('post-image-preview-container').classList.add('display-none');
         }
 
+        // FIXED SUBMITPOST: PROMPT ACTION ERRORS SECURELY
         function submitPost() {
             const textEl = document.getElementById('post-content');
             const content = textEl.value.trim();
@@ -678,7 +662,7 @@ if (is_dir($minigamesDir)) {
             fetch('api.php?action=create_post', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ content, image: postBase64Image })
+                body: JSON.stringify({ content: content, image: postBase64Image })
             })
             .then(res => res.json())
             .then(res => {
@@ -686,7 +670,13 @@ if (is_dir($minigamesDir)) {
                     textEl.value = '';
                     clearPostImage();
                     loadPosts();
+                } else {
+                    alert("Unable to post: " + (res.error || "Unknown backend error."));
                 }
+            })
+            .catch(err => {
+                console.error("Post exception:", err);
+                alert("Network communication error during submission.");
             });
         }
 
@@ -696,7 +686,7 @@ if (is_dir($minigamesDir)) {
                 .then(posts => {
                     const container = document.getElementById('posts-container');
                     container.innerHTML = '';
-                    if (posts.length === 0) {
+                    if (!posts || posts.length === 0) {
                         container.innerHTML = `
                             <div class="eccard padding-30px textAlign-center color-var(--text-sub) backgroundColor-var(--bg-card)">
                                 <span class="fontSize-36px">👥</span>
@@ -723,15 +713,24 @@ if (is_dir($minigamesDir)) {
                         container.appendChild(postCard);
                     });
                     if (window.ECStyleSheet) window.ECStyleSheet.scan();
-                });
+                })
+                .catch(err => console.error("Load posts error:", err));
         }
 
-        // 4. CALENDAR CONTROL
+        // FIXED LOADCALENDAR: GRACEFULLY FALLBACK TO RENDER GRID LAYOUT ON FAILURE
         function loadCalendar() {
             fetch('api.php?action=get_events')
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) throw new Error("HTTP connection error");
+                    return res.json();
+                })
                 .then(events => {
-                    loadedEvents = events;
+                    loadedEvents = Array.isArray(events) ? events : [];
+                    renderCalendar();
+                })
+                .catch(err => {
+                    console.error("Load events failure, loading empty layout fallback:", err);
+                    loadedEvents = [];
                     renderCalendar();
                 });
         }
@@ -739,6 +738,7 @@ if (is_dir($minigamesDir)) {
         function renderCalendar() {
             const grid = document.getElementById('calendar-grid');
             const title = document.getElementById('calendar-title');
+            if (!grid) return;
             grid.innerHTML = '';
 
             const year = calendarDate.getFullYear();
@@ -751,7 +751,7 @@ if (is_dir($minigamesDir)) {
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const prevDaysInMonth = new Date(year, month, 0).getDate();
 
-            // Fill empty leading calendar boxes
+            // Leading grey boxes
             for (let i = firstDay - 1; i >= 0; i--) {
                 const cell = document.createElement('div');
                 cell.className = 'eccard minHeight-90px padding-10px opacity-0.4 backgroundColor-var(--bg-card)';
@@ -759,7 +759,7 @@ if (is_dir($minigamesDir)) {
                 grid.appendChild(cell);
             }
 
-            // Fill active calendar month boxes
+            // Active days boxes
             for (let day = 1; day <= daysInMonth; day++) {
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 const isToday = (new Date().getDate() === day && new Date().getMonth() === month && new Date().getFullYear() === year);
@@ -794,12 +794,16 @@ if (is_dir($minigamesDir)) {
         function openAddEventModal() { document.getElementById('event-modal').style.display = 'flex'; }
         function closeAddEventModal() { document.getElementById('event-modal').style.display = 'none'; }
         
+        // FIXED SUBMITADDEVENT: ERROR BOUNDS CHECK AND USER-FEEDBACK PROMPT ON FAILURE
         function submitAddEvent() {
             const title = document.getElementById('event-title').value.trim();
             const description = document.getElementById('event-desc').value.trim();
             const date = document.getElementById('event-date').value;
 
-            if (!title || !date) return;
+            if (!title || !date) {
+                alert("Event title and date are required.");
+                return;
+            }
 
             fetch('api.php?action=add_event', {
                 method: 'POST',
@@ -814,7 +818,13 @@ if (is_dir($minigamesDir)) {
                     document.getElementById('event-desc').value = '';
                     document.getElementById('event-date').value = '';
                     loadCalendar();
+                } else {
+                    alert("Unable to save event: " + (res.error || "Unknown backend mismatch."));
                 }
+            })
+            .catch(err => {
+                console.error("Event creation error:", err);
+                alert("Network error occurred when saving event.");
             });
         }
 
