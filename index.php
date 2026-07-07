@@ -14,7 +14,7 @@ if (isset($_POST['action'])) {
             if ($user && password_verify($password, $user['password'])) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
-                header("Location: index.php");
+                header("Location: ./");
                 exit;
             } else {
                 $auth_error = "Invalid username or password.";
@@ -37,7 +37,7 @@ if (isset($_POST['action'])) {
                 $stmt->execute([$username, $hash, $display_name]);
                 $_SESSION['user_id'] = $pdo->lastInsertId();
                 $_SESSION['username'] = $username;
-                header("Location: index.php");
+                header("Location: ./");
                 exit;
             }
         } else {
@@ -48,7 +48,7 @@ if (isset($_POST['action'])) {
 
 if (isset($_GET['logout'])) {
     session_destroy();
-    header("Location: index.php");
+    header("Location: ./");
     exit;
 }
 
