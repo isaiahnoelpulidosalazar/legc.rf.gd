@@ -1,0 +1,87 @@
+:root {
+    --bg-color: #f0f2f5;
+    --grid-color: #34495e;
+    --cell-bg: #ffffff;
+    --text-color: #2c3e50;
+    --accent-color: #3498db;
+    --error-color: #e74c3c;
+    --fixed-color: #7f8c8d;
+}
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+}
+h1 { color: var(--text-color); margin-bottom: 10px; }
+.controls { margin-bottom: 20px; }
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: opacity 0.2s;
+}
+button:hover { opacity: 0.8; }
+#sudoku-grid {
+    display: grid;
+    grid-template-columns: repeat(9, 45px);
+    grid-template-rows: repeat(9, 45px);
+    border: 3px solid var(--grid-color);
+    background-color: var(--grid-color);
+    gap: 1px;
+}
+.cell {
+    width: 45px;
+    height: 45px;
+    background-color: var(--cell-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: bold;
+    outline: none;
+}
+@media (max-width: 768px) {
+    #sudoku-grid {
+        grid-template-columns: repeat(9, 36px);
+        grid-template-rows: repeat(9, 36px);
+    }
+    .cell {
+        width: 36px;
+        height: 36px;
+    }
+}
+.cell:nth-child(3n) { border-right: 2px solid var(--grid-color); }
+.cell:nth-child(9n) { border-right: none; }
+.cell:nth-child(n+19):nth-child(-n+27),
+.cell:nth-child(n+46):nth-child(-n+54) {
+    border-bottom: 2px solid var(--grid-color);
+}
+input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    text-align: center;
+    font-size: 20px;
+    color: var(--accent-color);
+    background: transparent;
+}
+input:disabled {
+    color: var(--fixed-color);
+    background-color: #f9f9f9;
+}
+.invalid { background-color: #ffdada; }
+
+#message {
+    margin-top: 15px;
+    font-weight: bold;
+    height: 20px;
+}
