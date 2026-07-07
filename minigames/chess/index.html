@@ -18,24 +18,22 @@
     </head>
     <body class="background-var(--ec-surface,_#f8f9fa) margin-0 padding-0 minHeight-100vh boxSizing-border-box">
         <div id="app" class="padding-8px display-flex gap-8px justifyContent-center flexWrap-wrap alignItems-flex-start">
+            <div class="eccard padding-20px display-flex flexDirection-column gap-8px boxSizing-border-box">
+                <h3 class="margin-0 fontSize-18px color-var(--ec-text,_#212529)">Game Settings</h3>
+                <div id="color-dropdown-container"></div>
+                <div id="dropdown-container"></div>
+                <div id="new-game-btn-container" class="marginTop-8px"></div>
+            </div>
             <div class="display-flex flexDirection-column gap-8px width-100% maxWidth-400px">
                 <div id="board-container" class="display-grid gridTemplateColumns-repeat(8,_1fr) gridTemplateRows-repeat(8,_1fr) width-100% height-400px borderRadius-8px overflow-hidden border-4px_solid_var(--ec-border,_#dee2e6) boxShadow-0_8px_24px_rgba(0,0,0,0.12) background-var(--ec-bg,_#fff)"></div>
             </div>
-            <div id="sidebar-container" class="display-flex flexDirection-column gap-8px width-100% maxWidth-320px">
-                <div class="eccard padding-20px display-flex flexDirection-column gap-8px boxSizing-border-box">
-                    <h3 class="margin-0 fontSize-18px color-var(--ec-text,_#212529)">Game Settings</h3>
-                    <div id="color-dropdown-container"></div>
-                    <div id="dropdown-container"></div>
-                    <div id="new-game-btn-container" class="marginTop-8px"></div>
+            <div class="eccard padding-20px display-flex flexDirection-column gap-16px boxSizing-border-box flex-1">
+                <div class="display-flex alignItems-center justifyContent-space-between gap-16px flexWrap-wrap">
+                    <h3 class="margin-0 fontSize-18px color-var(--ec-text,_#212529)">Match Log</h3>
+                    <div id="log-format-container"></div>
                 </div>
-                <div class="eccard padding-20px display-flex flexDirection-column gap-16px boxSizing-border-box flex-1">
-                    <div class="display-flex alignItems-center justifyContent-space-between gap-16px flexWrap-wrap">
-                        <h3 class="margin-0 fontSize-18px color-var(--ec-text,_#212529)">Match Log</h3>
-                        <div id="log-format-container"></div>
-                    </div>
-                    <textarea id="pgn-container" class="display-none width-100% height-240px padding-12px border-1px_solid_var(--ec-border,_#dee2e6) borderRadius-8px fontSize-14px color-var(--ec-text,_#212529) background-var(--ec-surface,_#f8f9fa) outline-none resize-none boxSizing-border-box fontFamily-monospace" readonly></textarea>
-                    <div id="movelist-container" class="display-flex flexDirection-column width-100% height-240px overflowY-auto border-1px_solid_var(--ec-border,_#dee2e6) borderRadius-8px background-var(--ec-surface,_#f8f9fa) boxSizing-border-box"></div>
-                </div>
+                <textarea id="pgn-container" class="display-none width-100% height-240px padding-12px border-1px_solid_var(--ec-border,_#dee2e6) borderRadius-8px fontSize-14px color-var(--ec-text,_#212529) background-var(--ec-surface,_#f8f9fa) outline-none resize-none boxSizing-border-box fontFamily-monospace" readonly></textarea>
+                <div id="movelist-container" class="display-flex flexDirection-column width-100% height-240px overflowY-auto border-1px_solid_var(--ec-border,_#dee2e6) borderRadius-8px background-var(--ec-surface,_#f8f9fa) boxSizing-border-box"></div>
             </div>
         </div>
     </body>
