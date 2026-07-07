@@ -17,8 +17,7 @@ body {
     min-height: 100vh;
     margin: 0;
 }
-h1 { color: var(--text-color); margin-bottom: 10px; }
-.controls { margin-bottom: 20px; }
+.controls { margin-top: 20px; }
 button {
     padding: 10px 20px;
     font-size: 16px;
