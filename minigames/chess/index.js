@@ -10,19 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
     '2': 1100,
     '3': 1300
   };
-  const playerCard = new window.ECMediaCard({
-    author: "You (White)",
-    content: `<b>Elo Rating:</b> ${playerElo}`,
-    avatarSrc: "https://api.dicebear.com/7.x/avataaars/svg?seed=Player"
-  });
-  document.getElementById('player-info-container').appendChild(playerCard.element);
-  
-  const botCard = new window.ECMediaCard({
-    author: "ChessBot (Black)",
-    content: `<b>Elo Rating:</b> 1100`,
-    avatarSrc: "https://api.dicebear.com/7.x/bottts/svg?seed=ChessBot"
-  });
-  document.getElementById('bot-info-container').appendChild(botCard.element);
   
   const colorDropdown = new window.ECDropdown({
     label: "Play as",
@@ -34,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   document.getElementById('color-dropdown-container').appendChild(colorDropdown.element);
   const botLevelDropdown = new window.ECDropdown({
-    label: "AI Difficulty Level",
+    label: "Difficulty Level",
     items: [
       { label: "L1 (300 Elo)", value: "1" },
       { label: "L2 (1100 Elo)", value: "2" },
@@ -42,9 +29,6 @@ document.addEventListener("DOMContentLoaded", () => {
     ]
   });
   botLevelDropdown.setValue("2");
-  botLevelDropdown.onChange((val) => {
-    botCard.setContent(`<b>Elo Rating:</b> ${botElos[val]}`);
-  });
   document.getElementById('dropdown-container').appendChild(botLevelDropdown.element);
   const logFormatDropdown = new window.ECDropdown({
     items: [
@@ -69,8 +53,6 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const colorPref = colorDropdown.getValue();
     playerColor = colorPref === 'random' ? (Math.random() > 0.5 ? 'w' : 'b') : colorPref;
-    playerCard.element.querySelector('p').textContent = `You (${playerColor === 'w' ? 'White' : 'Black'})`;
-    botCard.element.querySelector('p').textContent = `ChessBot (${playerColor === 'w' ? 'Black' : 'White'})`;
     updateBoard();
     updateSidebar();
     if (playerColor === 'b') {
@@ -133,7 +115,6 @@ document.addEventListener("DOMContentLoaded", () => {
     playerElo = newElo;
     
     localStorage.setItem('chess_elo', playerElo);
-    playerCard.setContent(`<b>Elo Rating:</b> ${playerElo}`);
     
     const changeStr = actualChange > 0 ? `+${actualChange}` : `${actualChange}`;
     
