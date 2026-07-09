@@ -167,9 +167,9 @@ if ($username) {
 
             <!-- Calendar Controllers -->
             <div class="display-flex justifyContent-space-between alignItems-center marginBottom-20px">
-                <button onclick="prevMonth()" class="backgroundColor-var(--bg-card) border-1px_solid_var(--border-color) color-var(--text-main) padding-8px_16px borderRadius-8px fontWeight-bold cursor-pointer ecbounce-3">◀ Prev</button>
+                <div id="cal-prev-container"></div>
                 <h2 id="calendar-title" class="fontSize-20px fontWeight-bold color-var(--text-main) margin-0px"></h2>
-                <button onclick="nextMonth()" class="backgroundColor-var(--bg-card) border-1px_solid_var(--border-color) color-var(--text-main) padding-8px_16px borderRadius-8px fontWeight-bold cursor-pointer ecbounce-3">Next ▶</button>
+                <div id="cal-next-container"></div>
             </div>
 
             <!-- Calendar Display Pane -->
@@ -187,64 +187,80 @@ if ($username) {
         <?php endif; ?>
     </div>
 
-    <div id="alert-modal" style="display:none;" class="position-fixed top-0px left-0px width-100% height-100% backgroundColor-rgba(0,0,0,0.5) display-flex justifyContent-center alignItems-center zIndex-2000">
-        <div class="eccard padding-25px width-100% maxWidth-400px display-flex flexDirection-column gap-15px backgroundColor-var(--bg-card) animate-modal-bounce">
-            <div id="alert-modal-title" class="fontSize-18px fontWeight-bold color-var(--text-main)">Notification</div>
-            <div id="alert-modal-message" class="color-var(--text-sub) fontSize-14px lineHeight-1.5" style="white-space: pre-wrap;"></div>
-            <div class="display-flex justifyContent-flex-end">
-                <button id="alert-modal-ok" class="backgroundColor-var(--primary) color-white border-none padding-8px_20px borderRadius-6px fontWeight-bold cursor-pointer ecbounce-3">OK</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- PUBLIC VIEW SLIDING EVENT DETAIL MODAL -->
-    <div id="day-events-modal" style="display:none;" class="position-fixed top-0px left-0px width-100% height-100% backgroundColor-rgba(0,0,0,0.5) display-flex justifyContent-center alignItems-center zIndex-1000">
-        <div class="eccard width-100% maxWidth-400px backgroundColor-var(--bg-card) animate-modal-bounce overflow-hidden" style="height: 350px; position: relative;">
-            <div id="modal-slider" class="display-flex width-200% height-100%" style="transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateX(0);">
-                
-                <!-- Pane 1: Event List -->
-                <div class="width-50% height-100% padding-20px display-flex flexDirection-column boxSizing-border-box">
-                    <div class="display-flex justifyContent-space-between alignItems-center marginBottom-15px">
-                        <span id="day-modal-title" class="fontSize-18px fontWeight-bold color-var(--text-main)">Events</span>
-                        <button onclick="closeDayEventsModal()" class="backgroundColor-transparent border-none fontSize-18px cursor-pointer color-var(--text-sub) hover:color-var(--text-main) ecbounce-3">✕</button>
-                    </div>
-                    <div id="day-modal-list" class="flex-1 overflowY-auto display-flex flexDirection-column gap-10px"></div>
-                </div>
-                
-                <!-- Pane 2: Event Details -->
-                <div class="width-50% height-100% padding-20px display-flex flexDirection-column boxSizing-border-box backgroundColor-var(--bg-body)">
-                    <div class="display-flex alignItems-center gap-10px marginBottom-15px">
-                        <button onclick="slideBackToEventsList()" class="backgroundColor-transparent border-none fontSize-14px cursor-pointer color-var(--primary) fontWeight-bold hover:opacity-0.8 ecbounce-3">◀ Back</button>
-                        <span class="fontSize-15px fontWeight-bold color-var(--text-main)">Event Details</span>
-                    </div>
-                    <div class="flex-1 overflowY-auto display-flex flexDirection-column gap-12px">
-                        <div>
-                            <div class="fontSize-10px fontWeight-bold color-var(--text-sub) textTransform-uppercase">Title</div>
-                            <div id="detail-title" class="fontSize-14px fontWeight-bold color-var(--text-main) marginTop-3px"></div>
-                        </div>
-                        <div>
-                            <div class="fontSize-10px fontWeight-bold color-var(--text-sub) textTransform-uppercase">Host</div>
-                            <div id="detail-host" class="fontSize-12px color-var(--text-main) marginTop-3px"></div>
-                        </div>
-                        <div>
-                            <div class="fontSize-10px fontWeight-bold color-var(--text-sub) textTransform-uppercase">Description</div>
-                            <div id="detail-desc" class="fontSize-13px color-var(--text-sub) lineHeight-1.4 whitespace-pre-wrap marginTop-3px"></div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
     <script>
         const loadedEvents = <?php echo json_encode($events); ?>;
         const hostDisplayName = <?php echo json_encode($user ? $user['display_name'] : ''); ?>;
         let calendarDate = new Date();
 
+        let appAlertModal = null;
+        let appDayEventsModal = null;
+
         window.addEventListener('DOMContentLoaded', () => {
+            initPublicECElements();
             renderCalendar();
         });
+
+        function initPublicECElements() {
+            // 1. Setup notification alert modal
+            appAlertModal = new ECModal("Notification");
+            document.body.appendChild(appAlertModal.element);
+
+            // 2. Setup sliding event overview list modal
+            appDayEventsModal = new ECModal("Events");
+            document.body.appendChild(appDayEventsModal.element);
+
+            const dayLogsLayout = document.createElement('div');
+            dayLogsLayout.className = "overflow-hidden width-100% position-relative";
+            dayLogsLayout.style.height = "280px";
+            dayLogsLayout.innerHTML = `
+                <div id="modal-slider" class="display-flex width-200% height-100%" style="transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateX(0);">
+                    <div class="width-50% height-100% display-flex flexDirection-column boxSizing-border-box">
+                        <div id="day-modal-list" class="flex-1 overflowY-auto display-flex flexDirection-column gap-10px"></div>
+                    </div>
+                    <div class="width-50% height-100% display-flex flexDirection-column boxSizing-border-box" style="padding-left: 15px;">
+                        <div class="display-flex alignItems-center gap-10px marginBottom-15px">
+                            <button id="slider-back-btn" class="backgroundColor-transparent border-none fontSize-13px cursor-pointer color-var(--primary) fontWeight-bold hover:opacity-0.8 transition-0.2s">◀ Back</button>
+                        </div>
+                        <div class="flex-1 overflowY-auto display-flex flexDirection-column gap-12px">
+                            <div>
+                                <div class="fontSize-10px fontWeight-bold color-var(--text-sub) textTransform-uppercase">Title</div>
+                                <div id="detail-title" class="fontSize-14px fontWeight-bold color-var(--text-main) marginTop-3px"></div>
+                            </div>
+                            <div>
+                                <div class="fontSize-10px fontWeight-bold color-var(--text-sub) textTransform-uppercase">Host</div>
+                                <div id="detail-host" class="fontSize-12px color-var(--text-main) marginTop-3px"></div>
+                            </div>
+                            <div>
+                                <div class="fontSize-10px fontWeight-bold color-var(--text-sub) textTransform-uppercase">Description</div>
+                                <div id="detail-desc" class="fontSize-13px color-var(--text-sub) lineHeight-1.4" style="white-space: pre-wrap;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            appDayEventsModal.setContent(dayLogsLayout);
+            appDayEventsModal._closeBtn.addEventListener('click', () => closeDayEventsModal());
+            appDayEventsModal._footer.style.display = 'none';
+
+            dayLogsLayout.querySelector('#slider-back-btn').addEventListener('click', () => slideBackToEventsList());
+
+            // 3. Navigation Controls
+            const prevContainer = document.getElementById('cal-prev-container');
+            if (prevContainer) {
+                const btn = new ECButton("◀ Prev", { variant: "white" });
+                btn.onClick(prevMonth);
+                prevContainer.appendChild(btn.element);
+            }
+
+            const nextBtn = document.getElementById('calendar-title'); // Anchor reference hook
+            const nextWrapper = document.querySelector('button[onclick="nextMonth()"]');
+            
+            // Re-render navigation containers with ECButton configurations
+            const navRightBtn = new ECButton("Next ▶", { variant: "white" });
+            navRightBtn.onClick(nextMonth);
+            const parentRight = document.getElementById('cal-next-container');
+            if (parentRight) parentRight.appendChild(navRightBtn.element);
+        }
 
         function showAlert(title, message) {
             document.getElementById('alert-modal-title').innerText = title;
@@ -275,7 +291,7 @@ if ($username) {
             } else {
                 dayEvents.forEach(e => {
                     const item = document.createElement('div');
-                    item.className = 'padding-12px borderRadius-8px border-1px_solid_var(--border-color) hover:backgroundColor-var(--primary-light) cursor-pointer transition-0.2s';
+                    item.className = 'padding-12px borderRadius-8px border-1px_solid_var(--border-color) hover:backgroundColor-var(--primary-light) cursor-pointer transition-0.2s ecbounce-2';
                     item.onclick = (event) => {
                         event.stopPropagation();
                         showEventDetailSlide(e.title, e.description || "No description provided.", hostDisplayName);
@@ -289,12 +305,12 @@ if ($username) {
             }
             
             document.getElementById('modal-slider').style.transform = 'translateX(0)';
-            document.getElementById('day-events-modal').style.display = 'flex';
+            appDayEventsModal.open();
             if (window.ECStyleSheet) window.ECStyleSheet.scan();
         }
 
         function closeDayEventsModal() {
-            document.getElementById('day-events-modal').style.display = 'none';
+            appDayEventsModal.close();
         }
 
         function showEventDetailSlide(title, description, host) {

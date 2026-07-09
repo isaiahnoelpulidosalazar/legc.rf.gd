@@ -399,7 +399,8 @@ if (is_dir($minigamesDir)) {
                                     📷 Add Image
                                     <input type="file" id="post-image-input" accept="image/png, image/jpeg, image/webp" class="display-none" onchange="previewPostImage(event)">
                                 </label>
-                                <button onclick="submitPost()" class="backgroundColor-var(--primary) hover:backgroundColor-var(--primary-hover) color-white border-none padding-8px_20px borderRadius-6px fontWeight-bold cursor-pointer transition-0.2s ecbounce-3">Post</button>
+                                <!-- DYNAMIC MOUNT FOR POST BUTTON -->
+                                <div id="post-btn-container"></div>
                             </div>
                             <div id="post-image-preview-container" class="display-none position-relative marginTop-10px width-100% maxHeight-250px borderRadius-8px overflow-hidden">
                                 <img id="post-image-preview" src="" class="width-100% height-auto objectFit-cover">
@@ -425,11 +426,11 @@ if (is_dir($minigamesDir)) {
 
                         <!-- Calendar Grid Navigation -->
                         <div class="display-flex justifyContent-space-between alignItems-center marginBottom-15px">
-                            <button onclick="prevMonth()" class="backgroundColor-var(--bg-card) border-1px_solid_var(--border-color) color-var(--text-main) padding-8px_16px borderRadius-8px fontWeight-bold cursor-pointer ecbounce-3">◀ Prev</button>
+                            <div id="cal-prev-container"></div>
                             <h2 id="calendar-title" class="fontSize-20px fontWeight-bold color-var(--text-main) margin-0px"></h2>
                             <div class="display-flex gap-10px">
-                                <button onclick="openAddEventModal()" class="backgroundColor-var(--primary) color-white border-none padding-8px_16px borderRadius-8px fontWeight-bold cursor-pointer ecbounce-3">+ Add Event</button>
-                                <button onclick="nextMonth()" class="backgroundColor-var(--bg-card) border-1px_solid_var(--border-color) color-var(--text-main) padding-8px_16px borderRadius-8px fontWeight-bold cursor-pointer ecbounce-3">Next ▶</button>
+                                <div id="add-event-btn-container"></div>
+                                <div id="cal-next-container"></div>
                             </div>
                         </div>
 
@@ -463,7 +464,7 @@ if (is_dir($minigamesDir)) {
                             <div id="chat-input-area" class="padding-15px borderTop-1px_solid_var(--border-color)" style="display:none;">
                                 <div class="display-flex gap-10px">
                                     <input type="text" id="message-text" class="flex-1 padding-12px borderRadius-8px border-1px_solid_var(--border-color) backgroundColor-var(--bg-body) color-var(--text-main) outline-none" placeholder="Type a message..." onkeydown="handleChatKey(event)">
-                                    <button onclick="sendChatMessage()" class="backgroundColor-var(--primary) color-white border-none padding-10px_20px borderRadius-8px fontWeight-bold cursor-pointer ecbounce-3">Send</button>
+                                    <div id="send-msg-container"></div>
                                 </div>
                             </div>
                         </div>
@@ -472,17 +473,21 @@ if (is_dir($minigamesDir)) {
 
                 <!-- TAB D: MINIGAMES -->
                 <div id="tab-minigames" class="tab-content" style="display:none;">
-                    <div class="width-100% maxWidth-850px margin-0_auto">
-                        <div class="fontSize-20px fontWeight-bold color-var(--text-main) marginBottom-15px">LeGC Interactive Arcade</div>
+                    <div class="width-100% maxWidth-850px margin-0_auto display-flex flexDirection-column gap-20px">
+                        <div class="display-flex justifyContent-space-between alignItems-center flexWrap-wrap gap-15px">
+                            <div class="fontSize-20px fontWeight-bold color-var(--text-main)">LeGC Interactive Arcade</div>
+                            <!-- Real-time dynamic search filter -->
+                            <input type="text" id="arcade-search" oninput="filterMinigames()" class="padding-10px_16px width-100% maxWidth-300px borderRadius-8px border-1px_solid_var(--border-color) backgroundColor-var(--bg-card) color-var(--text-main) outline-none" placeholder="Search minigames...">
+                        </div>
                         
-                        <!-- List Container -->
-                        <div id="minigames-container" class="display-grid gridTemplateColumns-repeat(auto-fill,_minmax(200px,_1fr)) gap-20px"></div>
+                        <!-- List view container instead of previous grid -->
+                        <div id="minigames-container" class="display-flex flexDirection-column gap-10px"></div>
                         
-                        <!-- Embedded Playing Sandbox -->
+                        <!-- Embedded game frame -->
                         <div id="game-arena" style="display:none;" class="eccard marginTop-20px padding-15px position-relative display-flex flexDirection-column gap-15px backgroundColor-var(--bg-card)">
                             <div class="display-flex justifyContent-space-between alignItems-center">
                                 <span id="arena-game-title" class="fontWeight-bold fontSize-18px color-var(--text-main)">Playing</span>
-                                <button onclick="closeGameArena()" class="backgroundColor-red color-white border-none padding-8px_16px borderRadius-8px fontWeight-bold cursor-pointer hover:opacity-0.8 ecbounce-3">Exit Arena</button>
+                                <div id="exit-game-container"></div>
                             </div>
                             <iframe id="game-iframe" class="width-100% height-500px borderRadius-8px border-none" src=""></iframe>
                         </div>
@@ -518,7 +523,7 @@ if (is_dir($minigamesDir)) {
                                 </div>
                             </div>
                             <div class="display-flex justifyContent-flex-end">
-                                <button onclick="saveProfileChanges()" class="backgroundColor-var(--primary) color-white border-none padding-10px_24px borderRadius-8px fontWeight-bold cursor-pointer ecbounce-3">Save Changes</button>
+                                <div id="save-profile-container"></div>
                             </div>
                         </div>
 
@@ -537,122 +542,14 @@ if (is_dir($minigamesDir)) {
                     <div class="width-100% maxWidth-650px margin-0_auto eccard padding-25px display-flex flexDirection-column gap-20px backgroundColor-var(--bg-card)">
                         <div class="fontSize-20px fontWeight-bold color-var(--text-main) borderBottom-1px_solid_var(--border-color) paddingBottom-10px">Theme Customization Panel</div>
                         
-                        <!-- Toggle Light / Dark -->
                         <div class="display-flex flexDirection-column gap-10px">
                             <span class="fontWeight-bold color-var(--text-main) fontSize-15px">Theme Mode</span>
-                            <div class="display-flex gap-15px">
-                                <label class="display-flex alignItems-center gap-8px cursor-pointer fontSize-14px">
-                                    <input type="radio" name="theme_mode" value="light" onclick="saveLocalTheme('light', null)">
-                                    <span class="color-var(--text-main)">☀ Light Theme</span>
-                                </label>
-                                <label class="display-flex alignItems-center gap-8px cursor-pointer fontSize-14px">
-                                    <input type="radio" name="theme_mode" value="dark" onclick="saveLocalTheme('dark', null)">
-                                    <span class="color-var(--text-main)">🌙 Dark Theme</span>
-                                </label>
-                            </div>
+                            <div id="theme-mode-radio-container"></div>
                         </div>
 
-                        <!-- Select Custom Accent Scheme -->
                         <div class="display-flex flexDirection-column gap-10px">
                             <span class="fontWeight-bold color-var(--text-main) fontSize-15px">Color Accents</span>
-                            <div class="display-flex flexWrap-wrap gap-12px">
-                                <!-- Standard Palette -->
-                                <label class="display-flex alignItems-center gap-6px cursor-pointer padding-8px borderRadius-6px border-1px_solid_var(--border-color) fontSize-13px">
-                                    <input type="radio" name="theme_color" value="blue" onclick="saveLocalTheme(null, 'blue')">
-                                    <span class="color-var(--text-main)">Classic Blue</span>
-                                </label>
-                                <label class="display-flex alignItems-center gap-6px cursor-pointer padding-8px borderRadius-6px border-1px_solid_var(--border-color) fontSize-13px">
-                                    <input type="radio" name="theme_color" value="purple" onclick="saveLocalTheme(null, 'purple')">
-                                    <span class="color-var(--text-main)">Royal Purple</span>
-                                </label>
-                                <label class="display-flex alignItems-center gap-6px cursor-pointer padding-8px borderRadius-6px border-1px_solid_var(--border-color) fontSize-13px">
-                                    <input type="radio" name="theme_color" value="green" onclick="saveLocalTheme(null, 'green')">
-                                    <span class="color-var(--text-main)">Forest Green</span>
-                                </label>
-                                <!-- Multi-color Themes (Sunset & Ocean gradients) -->
-                                <label class="display-flex alignItems-center gap-6px cursor-pointer padding-8px borderRadius-6px border-1px_solid_var(--border-color) fontSize-13px">
-                                    <input type="radio" name="theme_color" value="multi-sunset" onclick="saveLocalTheme(null, 'multi-sunset')">
-                                    <span class="color-var(--text-main)">🌅 Sunset (Gradient Theme)</span>
-                                </label>
-                                <label class="display-flex alignItems-center gap-6px cursor-pointer padding-8px borderRadius-6px border-1px_solid_var(--border-color) fontSize-13px">
-                                    <input type="radio" name="theme_color" value="multi-ocean" onclick="saveLocalTheme(null, 'multi-ocean')">
-                                    <span class="color-var(--text-main)">🌊 Ocean (Gradient Theme)</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- CALENDAR MODAL POPUP -->
-    <div id="event-modal" style="display:none;" class="position-fixed top-0px left-0px width-100% height-100% backgroundColor-rgba(0,0,0,0.5) display-flex justifyContent-center alignItems-center zIndex-1000">
-        <div class="eccard padding-20px width-100% maxWidth-400px display-flex flexDirection-column gap-15px backgroundColor-var(--bg-card) animate-modal-bounce">
-            <div class="fontSize-18px fontWeight-bold color-var(--text-main)">Create New Event</div>
-            <div class="display-flex flexDirection-column gap-5px">
-                <label class="color-var(--text-sub) fontSize-13px fontWeight-bold">Event Title</label>
-                <input type="text" id="event-title" class="padding-10px borderRadius-6px border-1px_solid_var(--border-color) backgroundColor-var(--bg-body) color-var(--text-main) outline-none">
-            </div>
-            <div class="display-flex flexDirection-column gap-5px">
-                <label class="color-var(--text-sub) fontSize-13px fontWeight-bold">Description</label>
-                <textarea id="event-desc" class="padding-10px borderRadius-6px border-1px_solid_var(--border-color) backgroundColor-var(--bg-body) color-var(--text-main) resize-none outline-none" rows="3"></textarea>
-            </div>
-            <div class="display-flex flexDirection-column gap-5px">
-                <label class="color-var(--text-sub) fontSize-13px fontWeight-bold">Date</label>
-                <input type="date" id="event-date" class="padding-10px borderRadius-6px border-1px_solid_var(--border-color) backgroundColor-var(--bg-body) color-var(--text-main) outline-none">
-            </div>
-            <div class="display-flex justifyContent-flex-end gap-10px">
-                <button onclick="closeAddEventModal()" class="backgroundColor-var(--bg-body) color-var(--text-main) border-none padding-10px_20px borderRadius-6px cursor-pointer hover:opacity-0.8">Cancel</button>
-                <button onclick="submitAddEvent()" class="backgroundColor-var(--primary) color-white border-none padding-10px_20px borderRadius-6px fontWeight-bold cursor-pointer ecbounce-3">Save</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="alert-modal" style="display:none;" class="position-fixed top-0px left-0px width-100% height-100% backgroundColor-rgba(0,0,0,0.5) display-flex justifyContent-center alignItems-center zIndex-2000">
-        <div class="eccard padding-25px width-100% maxWidth-400px display-flex flexDirection-column gap-15px backgroundColor-var(--bg-card) animate-modal-bounce">
-            <div id="alert-modal-title" class="fontSize-18px fontWeight-bold color-var(--text-main)">Notification</div>
-            <div id="alert-modal-message" class="color-var(--text-sub) fontSize-14px lineHeight-1.5" style="white-space: pre-wrap;"></div>
-            <div class="display-flex justifyContent-flex-end">
-                <button id="alert-modal-ok" class="backgroundColor-var(--primary) color-white border-none padding-8px_20px borderRadius-6px fontWeight-bold cursor-pointer ecbounce-3">OK</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="day-events-modal" style="display:none;" class="position-fixed top-0px left-0px width-100% height-100% backgroundColor-rgba(0,0,0,0.5) display-flex justifyContent-center alignItems-center zIndex-1000">
-        <div class="eccard width-100% maxWidth-400px backgroundColor-var(--bg-card) animate-modal-bounce overflow-hidden" style="height: 350px; position: relative;">
-            <!-- Sliding Track Wrapper -->
-            <div id="modal-slider" class="display-flex width-200% height-100%" style="transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateX(0);">
-                
-                <!-- Pane 1: Event List -->
-                <div class="width-50% height-100% padding-20px display-flex flexDirection-column boxSizing-border-box">
-                    <div class="display-flex justifyContent-space-between alignItems-center marginBottom-15px">
-                        <span id="day-modal-title" class="fontSize-18px fontWeight-bold color-var(--text-main)">Events</span>
-                        <button onclick="closeDayEventsModal()" class="backgroundColor-transparent border-none fontSize-18px cursor-pointer color-var(--text-sub) hover:color-var(--text-main) ecbounce-3">✕</button>
-                    </div>
-                    <!-- List container -->
-                    <div id="day-modal-list" class="flex-1 overflowY-auto display-flex flexDirection-column gap-10px"></div>
-                </div>
-                
-                <!-- Pane 2: Event Details -->
-                <div class="width-50% height-100% padding-20px display-flex flexDirection-column boxSizing-border-box backgroundColor-var(--bg-body)">
-                    <div class="display-flex alignItems-center gap-10px marginBottom-15px">
-                        <button onclick="slideBackToEventsList()" class="backgroundColor-transparent border-none fontSize-14px cursor-pointer color-var(--primary) fontWeight-bold hover:opacity-0.8 ecbounce-3">◀ Back</button>
-                        <span class="fontSize-15px fontWeight-bold color-var(--text-main)">Event Details</span>
-                    </div>
-                    <div class="flex-1 overflowY-auto display-flex flexDirection-column gap-12px">
-                        <div>
-                            <div class="fontSize-10px fontWeight-bold color-var(--text-sub) textTransform-uppercase">Title</div>
-                            <div id="detail-title" class="fontSize-14px fontWeight-bold color-var(--text-main) marginTop-3px"></div>
-                        </div>
-                        <div>
-                            <div class="fontSize-10px fontWeight-bold color-var(--text-sub) textTransform-uppercase">Host</div>
-                            <div id="detail-host" class="fontSize-12px color-var(--text-main) marginTop-3px"></div>
-                        </div>
-                        <div>
-                            <div class="fontSize-10px fontWeight-bold color-var(--text-sub) textTransform-uppercase">Description</div>
-                            <div id="detail-desc" class="fontSize-13px color-var(--text-sub) lineHeight-1.4 whitespace-pre-wrap marginTop-3px"></div>
+                            <div id="theme-color-radio-container"></div>
                         </div>
                     </div>
                 </div>
@@ -684,7 +581,15 @@ if (is_dir($minigamesDir)) {
         let calendarDate = new Date();
         let loadedEvents = [];
 
+        // ECELEMENT GLOBAL HANDLERS
+        let appAlertModal = null;
+        let appEventModal = null;
+        let appDayEventsModal = null;
+
         window.addEventListener('DOMContentLoaded', () => {
+            // ECElements Bootstrap Initialization
+            initECElements();
+
             applyThemeState(currentUser.theme_mode, currentUser.theme_color);
             document.getElementById('topbar-avatar').src = currentUser.avatar || getDefaultAvatar(currentUser.display_name);
             document.getElementById('topbar-name').innerText = currentUser.display_name;
@@ -693,23 +598,186 @@ if (is_dir($minigamesDir)) {
             setInterval(loadNotifications, 8000);
         });
 
-        function showAlert(title, message, callback = null) {
-            document.getElementById('alert-modal-title').innerText = title;
-            document.getElementById('alert-modal-message').innerText = message;
-            document.getElementById('alert-modal').style.display = 'flex';
-            
-            const okBtn = document.getElementById('alert-modal-ok');
-            okBtn.onclick = () => {
-                document.getElementById('alert-modal').style.display = 'none';
-                if (callback) callback();
-            };
+        // BOOTSTRAP FUNCTION: DYNAMICALLY INSTANTIATE AND MOUNT ECELEMENTS
+        function initECElements() {
+            // 1. Alert modal
+            appAlertModal = new ECModal("Notification");
+            document.body.appendChild(appAlertModal.element);
+
+            // 2. Add Event Form modal
+            appEventModal = new ECModal("Create New Event");
+            document.body.appendChild(appEventModal.element);
+
+            const eventForm = document.createElement('div');
+            eventForm.className = "display-flex flexDirection-column gap-15px width-100% minWidth-320px";
+            eventForm.innerHTML = `
+                <div class="display-flex flexDirection-column gap-4px">
+                    <label class="color-var(--text-sub) fontSize-12px fontWeight-bold">Event Title</label>
+                    <input type="text" id="event-title" class="padding-10px borderRadius-6px border-1px_solid_var(--border-color) backgroundColor-var(--bg-body) color-var(--text-main) outline-none">
+                </div>
+                <div class="display-flex flexDirection-column gap-4px">
+                    <label class="color-var(--text-sub) fontSize-12px fontWeight-bold">Description</label>
+                    <textarea id="event-desc" class="padding-10px borderRadius-6px border-1px_solid_var(--border-color) backgroundColor-var(--bg-body) color-var(--text-main) resize-none outline-none" rows="3"></textarea>
+                </div>
+                <div class="display-flex flexDirection-column gap-4px">
+                    <label class="color-var(--text-sub) fontSize-12px fontWeight-bold">Date</label>
+                    <input type="date" id="event-date" class="padding-10px borderRadius-6px border-1px_solid_var(--border-color) backgroundColor-var(--bg-body) color-var(--text-main) outline-none">
+                </div>
+            `;
+            appEventModal.setContent(eventForm);
+            appEventModal._footer.innerHTML = '';
+            appEventModal.addFooterButton("Cancel", () => appEventModal.close(), "outline");
+            appEventModal.addFooterButton("Save", () => submitAddEvent());
+
+            // 3. Sliding Day Logs modal
+            appDayEventsModal = new ECModal("Events");
+            document.body.appendChild(appDayEventsModal.element);
+
+            const dayLogsLayout = document.createElement('div');
+            dayLogsLayout.className = "overflow-hidden width-100% position-relative";
+            dayLogsLayout.style.height = "280px";
+            dayLogsLayout.innerHTML = `
+                <div id="modal-slider" class="display-flex width-200% height-100%" style="transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateX(0);">
+                    <!-- Pane 1: Event list -->
+                    <div class="width-50% height-100% display-flex flexDirection-column boxSizing-border-box">
+                        <div id="day-modal-list" class="flex-1 overflowY-auto display-flex flexDirection-column gap-10px"></div>
+                    </div>
+                    <!-- Pane 2: Sliding event parameters -->
+                    <div class="width-50% height-100% display-flex flexDirection-column boxSizing-border-box" style="padding-left: 15px;">
+                        <div class="display-flex alignItems-center gap-10px marginBottom-15px">
+                            <button id="slider-back-btn" class="backgroundColor-transparent border-none fontSize-13px cursor-pointer color-var(--primary) fontWeight-bold hover:opacity-0.8 transition-0.2s">◀ Back</button>
+                        </div>
+                        <div class="flex-1 overflowY-auto display-flex flexDirection-column gap-12px">
+                            <div>
+                                <div class="fontSize-10px fontWeight-bold color-var(--text-sub) textTransform-uppercase">Title</div>
+                                <div id="detail-title" class="fontSize-14px fontWeight-bold color-var(--text-main) marginTop-3px"></div>
+                            </div>
+                            <div>
+                                <div class="fontSize-10px fontWeight-bold color-var(--text-sub) textTransform-uppercase">Host</div>
+                                <div id="detail-host" class="fontSize-12px color-var(--text-main) marginTop-3px"></div>
+                            </div>
+                            <div>
+                                <div class="fontSize-10px fontWeight-bold color-var(--text-sub) textTransform-uppercase">Description</div>
+                                <div id="detail-desc" class="fontSize-13px color-var(--text-sub) lineHeight-1.4" style="white-space: pre-wrap;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            appDayEventsModal.setContent(dayLogsLayout);
+            appDayEventsModal._closeBtn.addEventListener('click', () => closeDayEventsModal());
+            appDayEventsModal._footer.style.display = 'none';
+
+            // Connect slider back action event listener
+            dayLogsLayout.querySelector('#slider-back-btn').addEventListener('click', () => slideBackToEventsList());
+
+            // 4. Post Button
+            const postBtnContainer = document.getElementById('post-btn-container');
+            if (postBtnContainer) {
+                const btn = new ECButton("Post");
+                btn.onClick(() => submitPost());
+                postBtnContainer.appendChild(btn.element);
+            }
+
+            // 5. Add Event Button
+            const addEventContainer = document.getElementById('add-event-btn-container');
+            if (addEventContainer) {
+                const btn = new ECButton("+ Add Event");
+                btn.onClick(() => openAddEventModal());
+                addEventContainer.appendChild(btn.element);
+            }
+
+            // 6. Calendar Prev / Next Buttons
+            const prevContainer = document.getElementById('cal-prev-container');
+            if (prevContainer) {
+                const btn = new ECButton("◀ Prev", { variant: "outline" });
+                btn.onClick(() => prevMonth());
+                prevContainer.appendChild(btn.element);
+            }
+            const nextContainer = document.getElementById('cal-next-container');
+            if (nextContainer) {
+                const btn = new ECButton("Next ▶", { variant: "outline" });
+                btn.onClick(() => nextMonth());
+                nextContainer.appendChild(btn.element);
+            }
+
+            // 7. Send Chat message button
+            const sendMsgContainer = document.getElementById('send-msg-container');
+            if (sendMsgContainer) {
+                const btn = new ECButton("Send");
+                btn.onClick(() => sendChatMessage());
+                sendMsgContainer.appendChild(btn.element);
+            }
+
+            // 8. Exit Game button
+            const exitGameContainer = document.getElementById('exit-game-container');
+            if (exitGameContainer) {
+                const btn = new ECButton("Exit Arcade", { variant: "outline" });
+                btn.onClick(() => closeGameArena());
+                exitGameContainer.appendChild(btn.element);
+            }
+
+            // 9. Save profile changes
+            const saveProfileContainer = document.getElementById('save-profile-container');
+            if (saveProfileContainer) {
+                const btn = new ECButton("Save Changes");
+                btn.onClick(() => saveProfileChanges());
+                saveProfileContainer.appendChild(btn.element);
+            }
+
+            // 10. Theme Toggles
+            const modeRadioContainer = document.getElementById('theme-mode-radio-container');
+            if (modeRadioContainer) {
+                const radioMode = new ECRadio("theme_mode", [
+                    { value: "light", label: "☀ Light Theme", checked: currentUser.theme_mode === 'light' },
+                    { value: "dark", label: "🌙 Dark Theme", checked: currentUser.theme_mode === 'dark' }
+                ]);
+                radioMode.onChange((val) => saveLocalTheme(val, null));
+                modeRadioContainer.appendChild(radioMode.element);
+            }
+
+            const colorRadioContainer = document.getElementById('theme-color-radio-container');
+            if (colorRadioContainer) {
+                const radioColor = new ECRadio("theme_color", [
+                    { value: "blue", label: "Classic Blue", checked: currentUser.theme_color === 'blue' },
+                    { value: "purple", label: "Royal Purple", checked: currentUser.theme_color === 'purple' },
+                    { value: "green", label: "Forest Green", checked: currentUser.theme_color === 'green' },
+                    { value: "multi-sunset", label: "🌇 Sunset (Gradient Theme)", checked: currentUser.theme_color === 'multi-sunset' },
+                    { value: "multi-ocean", label: "🌊 Ocean (Gradient Theme)", checked: currentUser.theme_color === 'multi-ocean' }
+                ]);
+                radioColor.onChange((val) => saveLocalTheme(null, val));
+                colorRadioContainer.appendChild(radioColor.element);
+            }
         }
 
-        // 1. DYNAMIC SLIDING DAILY LOGS FOR CALENDAR EVENTS
+        // REDESIGNED POPUP PORTALS USING ECMODAL
+        function showAlert(title, message, callback = null) {
+            appAlertModal.setTitle(title);
+            appAlertModal.clearContent();
+            
+            const msgEl = document.createElement('div');
+            msgEl.className = "color-var(--text-sub) fontSize-14px lineHeight-1.5";
+            msgEl.style.whiteSpace = "pre-wrap";
+            msgEl.innerText = message;
+            appAlertModal.setContent(msgEl);
+
+            appAlertModal._footer.innerHTML = '';
+            appAlertModal.addFooterButton("OK", () => {
+                appAlertModal.close();
+                if (callback) callback();
+            });
+
+            appAlertModal.open();
+        }
+
+        function showEventDetailPopup(title, description, host) {
+            showAlert("Event Details", `Title: ${title}\nDescription: ${description}\nHost: ${host}`);
+        }
+
         function openDayEventsModal(dateStr, day) {
             const dateObj = new Date(dateStr + "T00:00:00");
             const formattedDate = dateObj.toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
-            document.getElementById('day-modal-title').innerText = `Events on ${formattedDate}`;
+            appDayEventsModal.setTitle(`Events on ${formattedDate}`);
             
             const listContainer = document.getElementById('day-modal-list');
             listContainer.innerHTML = '';
@@ -725,9 +793,9 @@ if (is_dir($minigamesDir)) {
             } else {
                 dayEvents.forEach(e => {
                     const item = document.createElement('div');
-                    item.className = 'padding-12px borderRadius-8px border-1px_solid_var(--border-color) hover:backgroundColor-var(--primary-light) cursor-pointer transition-0.2s';
+                    item.className = 'padding-12px borderRadius-8px border-1px_solid_var(--border-color) hover:backgroundColor-var(--primary-light) cursor-pointer transition-0.2s ecbounce-2';
                     item.onclick = (event) => {
-                        event.stopPropagation(); // Avoid day-cell click trigger loop
+                        event.stopPropagation();
                         showEventDetailSlide(e.title, e.description || "No description provided.", e.display_name);
                     };
                     item.innerHTML = `
@@ -738,29 +806,28 @@ if (is_dir($minigamesDir)) {
                 });
             }
             
-            // Reset sliding track to List view (Pane 1)
             document.getElementById('modal-slider').style.transform = 'translateX(0)';
-            document.getElementById('day-events-modal').style.display = 'flex';
+            appDayEventsModal.open();
             if (window.ECStyleSheet) window.ECStyleSheet.scan();
         }
 
         function closeDayEventsModal() {
-            document.getElementById('day-events-modal').style.display = 'none';
+            appDayEventsModal.close();
         }
 
         function showEventDetailSlide(title, description, host) {
             document.getElementById('detail-title').innerText = title;
             document.getElementById('detail-desc').innerText = description;
             document.getElementById('detail-host').innerText = host;
-            
-            // Slide track to show Details (Pane 2)
             document.getElementById('modal-slider').style.transform = 'translateX(-50%)';
         }
 
         function slideBackToEventsList() {
-            // Slide track back to show List (Pane 1)
             document.getElementById('modal-slider').style.transform = 'translateX(0)';
         }
+
+        function openAddEventModal() { appEventModal.open(); }
+        function closeAddEventModal() { appEventModal.close(); }
 
         // 2. SPA ROUTER SWITCH
         function showTab(tabName) {
@@ -1129,26 +1196,46 @@ if (is_dir($minigamesDir)) {
             if (e.key === 'Enter') sendChatMessage();
         }
 
-        function loadMinigamesView() {
-            const grid = document.getElementById('minigames-container');
-            grid.innerHTML = '';
+        function loadMinigamesView(query = "") {
+            const container = document.getElementById('minigames-container');
+            container.innerHTML = '';
             
             if (minigamesList.length === 0) {
-                grid.innerHTML = `<span class="color-var(--text-sub) fontSize-13px">Please create entry files in the /minigames directory.</span>`;
+                container.innerHTML = `<span class="color-var(--text-sub) fontSize-13px">No interactive game objects loaded.</span>`;
                 return;
             }
 
-            minigamesList.forEach(game => {
+            const filtered = minigamesList.filter(g => g.name.toLowerCase().includes(query.toLowerCase()));
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<span class="color-var(--text-sub) fontSize-13px padding-15px">No matches found for "${escapeHtml(query)}"</span>`;
+                return;
+            }
+
+            filtered.forEach(game => {
                 const card = document.createElement('div');
-                card.className = 'eccard padding-20px display-flex flexDirection-column alignItems-center gap-10px cursor-pointer ecbounce-3 backgroundColor-var(--bg-card)';
+                card.className = 'eccard padding-15px display-flex alignItems-center justifyContent-space-between cursor-pointer ecbounce-2 backgroundColor-var(--bg-card) hover:backgroundColor-var(--primary-light) transition-0.2s';
                 card.onclick = () => launchGame(game.path, game.name);
                 card.innerHTML = `
-                    <span class="fontSize-36px">🎮</span>
-                    <span class="fontWeight-bold color-var(--text-main) fontSize-15px text-align-center">${escapeHtml(game.name)}</span>
+                    <div class="display-flex alignItems-center gap-15px">
+                        <span class="fontSize-28px">🎮</span>
+                        <div class="display-flex flexDirection-column">
+                            <span class="fontWeight-bold color-var(--text-main) fontSize-15px">${escapeHtml(game.name)}</span>
+                            <span class="color-var(--text-sub) fontSize-11px">Local Arcade Module</span>
+                        </div>
+                    </div>
+                    <div class="display-flex alignItems-center gap-5px color-var(--primary) fontWeight-bold fontSize-13px">
+                        Play Game <span class="fontSize-10px">▶</span>
+                    </div>
                 `;
-                grid.appendChild(card);
+                container.appendChild(card);
             });
             if (window.ECStyleSheet) window.ECStyleSheet.scan();
+        }
+
+        function filterMinigames() {
+            const query = document.getElementById('arcade-search').value;
+            loadMinigamesView(query);
         }
 
         function launchGame(path, name) {
