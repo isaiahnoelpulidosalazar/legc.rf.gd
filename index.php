@@ -98,79 +98,59 @@ if (is_dir($minigamesDir)) {
         
         /* LIGHT MODES */
         body.light {
-            --bg-body: #f0f2f5;
-            --bg-card: #ffffff;
-            --text-main: #050505;
-            --text-sub: #65676b;
-            --border-color: #ced0d4;
+            --bg-body: #f1f5f9;
+            --bg-card: rgba(255, 255, 255, 0.65); /* Translucent base for light glass */
+            --text-main: #0f172a;
+            --text-sub: #475569;
+            --border-color: rgba(15, 23, 42, 0.08); /* Minimal translucent border */
             --ec-bg: var(--bg-card);
             --ec-border: var(--border-color);
         }
-        body.light.blue {
-            --primary: #1877f2;
-            --primary-hover: #166fe5;
-            --primary-light: #e7f3ff;
-        }
-        body.light.purple {
-            --primary: #8a2be2;
-            --primary-hover: #7b1fa2;
-            --primary-light: #f3e5f5;
-        }
-        body.light.green {
-            --primary: #2ecc71;
-            --primary-hover: #27ae60;
-            --primary-light: #e8f8f5;
-        }
-        body.light.multi-sunset {
-            --primary: #ff4757;
-            --primary-hover: #ff6b81;
-            --primary-light: #ffe0e6;
-            background: linear-gradient(135deg, #f0f2f5 0%, #ffe3e8 100%) !important;
-        }
-        body.light.multi-ocean {
-            --primary: #00bcd4;
-            --primary-hover: #00acc1;
-            --primary-light: #e0f7fa;
-            background: linear-gradient(135deg, #f0f2f5 0%, #e0faff 100%) !important;
-        }
+        body.light.blue { background: radial-gradient(at 0% 0%, #e0f2fe 0px, transparent 50%), radial-gradient(at 100% 100%, #e0f2fe 0px, transparent 50%), #f1f5f9 !important; }
+        body.light.purple { background: radial-gradient(at 0% 0%, #f3e8ff 0px, transparent 50%), radial-gradient(at 100% 100%, #fae8ff 0px, transparent 50%), #f1f5f9 !important; }
+        body.light.green { background: radial-gradient(at 0% 0%, #dcfce7 0px, transparent 50%), radial-gradient(at 100% 100%, #f0fdf4 0px, transparent 50%), #f1f5f9 !important; }
+        body.light.multi-sunset { background: radial-gradient(at 0% 0%, #ffedd5 0px, transparent 50%), radial-gradient(at 100% 100%, #fce7f3 0px, transparent 50%), #f1f5f9 !important; }
+        body.light.multi-ocean { background: radial-gradient(at 0% 0%, #ccfbf1 0px, transparent 50%), radial-gradient(at 100% 100%, #e0f2fe 0px, transparent 50%), #f1f5f9 !important; }
 
         /* DARK MODES */
         body.dark {
-            --bg-body: #18191a;
-            --bg-card: #242526;
-            --text-main: #e4e6eb;
-            --text-sub: #b0b3b8;
-            --border-color: #3e4042;
+            --bg-body: #030712;
+            --bg-card: rgba(17, 24, 39, 0.65); /* Translucent base for dark glass */
+            --text-main: #f9fafb;
+            --text-sub: #9ca3af;
+            --border-color: rgba(255, 255, 255, 0.08); /* Minimal translucent border */
             --ec-bg: var(--bg-card);
             --ec-border: var(--border-color);
         }
-        body.dark.blue {
-            --primary: #2d88ff;
-            --primary-hover: #3578e5;
-            --primary-light: #263951;
+        body.dark.blue { background: radial-gradient(at 0% 0%, #0c1524 0px, transparent 50%), radial-gradient(at 100% 100%, #07101e 0px, transparent 50%), #030712 !important; }
+        body.dark.purple { background: radial-gradient(at 0% 0%, #1a0b2e 0px, transparent 50%), radial-gradient(at 100% 100%, #0d041e 0px, transparent 50%), #03010c !important; }
+        body.dark.green { background: radial-gradient(at 0% 0%, #052e16 0px, transparent 30%), radial-gradient(at 100% 100%, #022c22 0px, transparent 35%), #020617 !important; }
+        body.dark.multi-sunset { background: radial-gradient(at 0% 0%, #2e1015 0px, transparent 50%), radial-gradient(at 100% 100%, #1e1b4b 0px, transparent 50%), #030712 !important; }
+        body.dark.multi-ocean { background: radial-gradient(at 0% 0%, #115e59 0px, transparent 40%), radial-gradient(at 100% 100%, #075985 0px, transparent 40%), #020617 !important; }
+
+        /* CORE FROSTED GLASS TRANSFORMATION (BACKDROP-FILTERS) */
+        .eccard, .tab-content, #day-events-modal > div, #event-modal > div, #alert-modal > div {
+            background: var(--bg-card) !important;
+            border: 1px solid var(--border-color) !important;
+            backdrop-filter: blur(12px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08) !important;
         }
-        body.dark.purple {
-            --primary: #a040ff;
-            --primary-hover: #8f2be2;
-            --primary-light: #3e2751;
+
+        .sidebar-glass {
+            background: var(--bg-card) !important;
+            backdrop-filter: blur(16px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+            border-right: 1px solid var(--border-color) !important;
         }
-        body.dark.green {
-            --primary: #2ecc71;
-            --primary-hover: #2ecc71;
-            --primary-light: #1b3d2b;
+
+        .topbar-glass {
+            background: var(--bg-card) !important;
+            backdrop-filter: blur(16px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+            border-bottom: 1px solid var(--border-color) !important;
         }
-        body.dark.multi-sunset {
-            --primary: #ff4757;
-            --primary-hover: #ff6b81;
-            --primary-light: #4c1d24;
-            background: linear-gradient(135deg, #18191a 0%, #301b1e 100%) !important;
-        }
-        body.dark.multi-ocean {
-            --primary: #00bcd4;
-            --primary-hover: #00acc1;
-            --primary-light: #1b3d42;
-            background: linear-gradient(135deg, #18191a 0%, #162c30 100%) !important;
-        }
+
         .spinner {
             width: 35px;
             height: 35px;
@@ -194,7 +174,7 @@ if (is_dir($minigamesDir)) {
             animation: modalBounce 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
         }
 
-alert-modal        .width-200% { width: 200%; }
+        .width-200% { width: 200%; }
         .width-50% { width: 50%; }
     </style>
 </head>
@@ -280,8 +260,8 @@ alert-modal        .width-200% { width: 200%; }
     <!-- AUTHENTICATED SYSTEM PORTAL -->
     <div class="display-flex flexDirection-column height-100vh overflow-hidden">
         
-        <!-- 1. TOPBAR -->
-        <div class="height-60px backgroundColor-var(--bg-card) borderBottom-1px_solid_var(--border-color) display-flex justifyContent-space-between alignItems-center paddingLeft-20px paddingRight-20px position-sticky top-0px zIndex-100 boxSizing-border-box">
+        <!-- 1. TOPBAR (UPDATED WITH GLASS EFFECT) -->
+        <div class="height-60px topbar-glass display-flex justifyContent-space-between alignItems-center paddingLeft-20px paddingRight-20px position-sticky top-0px zIndex-100 boxSizing-border-box">
             
             <!-- Left Side User Info -->
             <div class="display-flex alignItems-center gap-10px">
@@ -301,7 +281,7 @@ alert-modal        .width-200% { width: 200%; }
                         <span id="notif-badge" style="display:none;" class="position-absolute top-0px right-0px backgroundColor-red color-white fontSize-9px padding-2px_5px borderRadius-50%">0</span>
                     </button>
                     <!-- Dropdown -->
-                    <div id="notif-dropdown" style="display:none;" class="position-absolute right-0px top-35px width-300px eccard backgroundColor-var(--bg-card) padding-12px zIndex-1000 display-flex flexDirection-column gap-10px max-height-350px overflowY-auto boxShadow-0_4px_12px_rgba(0,0,0,0.15)">
+                    <div id="notif-dropdown" style="display:none;" class="position-absolute right-0px top-35px width-300px eccard padding-12px zIndex-1000 display-flex flexDirection-column gap-10px max-height-350px overflowY-auto">
                         <div class="borderBottom-1px_solid_var(--border-color) paddingBottom-5px fontWeight-bold color-var(--text-main) fontSize-14px">Notifications</div>
                         <div id="notif-list" class="display-flex flexDirection-column gap-8px"></div>
                     </div>
@@ -315,8 +295,8 @@ alert-modal        .width-200% { width: 200%; }
         <!-- 2. MAIN CORE LAYOUT -->
         <div class="display-flex flex-1 height-calc(100vh_-_60px) width-100% overflow-hidden">
             
-            <!-- Left Navigation Sidebar -->
-            <div class="width-250px backgroundColor-var(--bg-card) borderRight-1px_solid_var(--border-color) padding-20px display-flex flexDirection-column gap-10px height-100% boxSizing-border-box mobile:width-70px mobile:padding-10px transition-0.2s">
+            <!-- Left Navigation Sidebar (UPDATED WITH GLASS EFFECT) -->
+            <div class="width-250px sidebar-glass padding-20px display-flex flexDirection-column gap-10px height-100% boxSizing-border-box mobile:width-70px mobile:padding-10px transition-0.2s">
                 <div id="link-home" onclick="showTab('home')" class="sidebar-link display-flex alignItems-center gap-12px padding-12px borderRadius-8px cursor-pointer transition-0.2s hover:backgroundColor-var(--primary-light)">
                     <span class="fontSize-20px">🏡</span>
                     <span class="fontWeight-600 color-var(--text-main) mobile:display-none">Home</span>
