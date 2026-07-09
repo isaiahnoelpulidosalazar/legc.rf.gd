@@ -61,11 +61,36 @@ if ($username) {
             --ec-bg: var(--bg-card);
             --ec-border: var(--border-color);
         }
-        body.light.blue { background: radial-gradient(at 0% 0%, #e0f2fe 0px, transparent 50%), radial-gradient(at 100% 100%, #e0f2fe 0px, transparent 50%), #f1f5f9 !important; }
-        body.light.purple { background: radial-gradient(at 0% 0%, #f3e8ff 0px, transparent 50%), radial-gradient(at 100% 100%, #fae8ff 0px, transparent 50%), #f1f5f9 !important; }
-        body.light.green { background: radial-gradient(at 0% 0%, #dcfce7 0px, transparent 50%), radial-gradient(at 100% 100%, #f0fdf4 0px, transparent 50%), #f1f5f9 !important; }
-        body.light.multi-sunset { background: radial-gradient(at 0% 0%, #ffedd5 0px, transparent 50%), radial-gradient(at 100% 100%, #fce7f3 0px, transparent 50%), #f1f5f9 !important; }
-        body.light.multi-ocean { background: radial-gradient(at 0% 0%, #ccfbf1 0px, transparent 50%), radial-gradient(at 100% 100%, #e0f2fe 0px, transparent 50%), #f1f5f9 !important; }
+        body.light.blue { 
+            --primary: #1877f2;
+            --primary-hover: #166fe5;
+            --primary-light: #e7f3ff;
+            background: radial-gradient(at 0% 0%, #e0f2fe 0px, transparent 50%), radial-gradient(at 100% 100%, #e0f2fe 0px, transparent 50%), #f1f5f9 !important; 
+        }
+        body.light.purple { 
+            --primary: #8a2be2;
+            --primary-hover: #7b1fa2;
+            --primary-light: #f3e5f5;
+            background: radial-gradient(at 0% 0%, #f3e8ff 0px, transparent 50%), radial-gradient(at 100% 100%, #fae8ff 0px, transparent 50%), #f1f5f9 !important; 
+        }
+        body.light.green { 
+            --primary: #2ecc71;
+            --primary-hover: #27ae60;
+            --primary-light: #e8f8f5;
+            background: radial-gradient(at 0% 0%, #dcfce7 0px, transparent 50%), radial-gradient(at 100% 100%, #f0fdf4 0px, transparent 50%), #f1f5f9 !important; 
+        }
+        body.light.multi-sunset { 
+            --primary: #ff4757;
+            --primary-hover: #ff6b81;
+            --primary-light: #ffe0e6;
+            background: radial-gradient(at 0% 0%, #ffedd5 0px, transparent 50%), radial-gradient(at 100% 100%, #fce7f3 0px, transparent 50%), #f1f5f9 !important; 
+        }
+        body.light.multi-ocean { 
+            --primary: #00bcd4;
+            --primary-hover: #00acc1;
+            --primary-light: #e0f7fa;
+            background: radial-gradient(at 0% 0%, #ccfbf1 0px, transparent 50%), radial-gradient(at 100% 100%, #e0f2fe 0px, transparent 50%), #f1f5f9 !important; 
+        }
 
         /* DARK MODES WITH CORRECTED LIGHT TEXT COLORS */
         body.dark {
@@ -77,12 +102,37 @@ if ($username) {
             --ec-bg: var(--bg-card);
             --ec-border: var(--border-color);
         }
-        body.dark.blue { background: radial-gradient(at 0% 0%, #0c1524 0px, transparent 50%), radial-gradient(at 100% 100%, #07101e 0px, transparent 50%), #030712 !important; }
-        body.dark.purple { background: radial-gradient(at 0% 0%, #1a0b2e 0px, transparent 50%), radial-gradient(at 100% 100%, #0d041e 0px, transparent 50%), #03010c !important; }
-        body.dark.green { background: radial-gradient(at 0% 0%, #052e16 0px, transparent 30%), radial-gradient(at 100% 100%, #022c22 0px, transparent 35%), #020617 !important; }
-        body.dark.multi-sunset { background: radial-gradient(at 0% 0%, #2e1015 0px, transparent 50%), radial-gradient(at 100% 100%, #1e1b4b 0px, transparent 50%), #030712 !important; }
-        body.dark.multi-ocean { background: radial-gradient(at 0% 0%, #115e59 0px, transparent 40%), radial-gradient(at 100% 100%, #075985 0px, transparent 40%), #020617 !important; }
-
+        body.dark.blue { 
+            --primary: #2d88ff;
+            --primary-hover: #3578e5;
+            --primary-light: #263951;
+            background: radial-gradient(at 0% 0%, #0c1524 0px, transparent 50%), radial-gradient(at 100% 100%, #07101e 0px, transparent 50%), #030712 !important; 
+        }
+        body.dark.purple { 
+            --primary: #a040ff;
+            --primary-hover: #8f2be2;
+            --primary-light: #3e2751;
+            background: radial-gradient(at 0% 0%, #1a0b2e 0px, transparent 50%), radial-gradient(at 100% 100%, #0d041e 0px, transparent 50%), #03010c !important; 
+        }
+        body.dark.green { 
+            --primary: #2ecc71;
+            --primary-hover: #27ae60;
+            --primary-light: #1b3d2b;
+            background: radial-gradient(at 0% 0%, #052e16 0px, transparent 30%), radial-gradient(at 100% 100%, #022c22 0px, transparent 35%), #020617 !important; 
+        }
+        body.dark.multi-sunset { 
+            --primary: #ff4757;
+            --primary-hover: #ff6b81;
+            --primary-light: #4c1d24;
+            background: radial-gradient(at 0% 0%, #2e1015 0px, transparent 50%), radial-gradient(at 100% 100%, #1e1b4b 0px, transparent 50%), #030712 !important; 
+        }
+        body.dark.multi-ocean { 
+            --primary: #00bcd4;
+            --primary-hover: #00acc1;
+            --primary-light: #1b3d42;
+            background: radial-gradient(at 0% 0%, #115e59 0px, transparent 40%), radial-gradient(at 100% 100%, #075985 0px, transparent 40%), #020617 !important; 
+        }
+        
         /* DIRECT CLASS OVERRIDES TO ENFORCE CORRECT TEXT CONTRASTS */
         body, h1, h2, h3, h4, h5, h6, p, span, a, label, textarea, input, select {
             color: var(--text-main) !important;
@@ -272,7 +322,7 @@ if ($username) {
             } else {
                 dayEvents.forEach(e => {
                     const item = document.createElement('div');
-                    item.className = 'padding-12px borderRadius-8px border-1px_solid_var(--border-color) hover:backgroundColor-var(--primary-light) cursor-pointer transition-0.2s ecbounce-2';
+                    item.className = 'padding-12px borderRadius-8px border-1px_solid_var(--border-color) hover:backgroundColor-var(--primary-light) cursor-pointer transition-0.2s';
                     item.onclick = (event) => {
                         event.stopPropagation();
                         showEventDetailSlide(e.title, e.description || "No description provided.", hostDisplayName);
