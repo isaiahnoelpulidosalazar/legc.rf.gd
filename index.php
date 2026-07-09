@@ -689,7 +689,7 @@ if (is_dir($minigamesDir)) {
                     <div class="width-50% height-100% display-flex flexDirection-column boxSizing-border-box">
                         <div id="day-modal-list" class="flex-1 overflowY-auto display-flex flexDirection-column gap-10px"></div>
                     </div>
-                    <div class="width-50% height-100% display-flex flexDirection-column boxSizing-border-box" style="padding-left: 15px;">
+                    <div class="width-50% height-100% display-flex flexDirection-column boxSizing-border-box">
                         <div class="display-flex alignItems-center gap-10px marginBottom-15px">
                             <button id="slider-back-btn" class="backgroundColor-transparent border-none fontSize-13px cursor-pointer color-var(--primary) fontWeight-bold hover:opacity-0.8 transition-0.2s">◀ Back</button>
                         </div>

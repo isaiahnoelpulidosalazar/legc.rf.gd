@@ -132,7 +132,7 @@ if ($username) {
             --primary-light: #1b3d42;
             background: radial-gradient(at 0% 0%, #115e59 0px, transparent 40%), radial-gradient(at 100% 100%, #075985 0px, transparent 40%), #020617 !important; 
         }
-        
+
         /* DIRECT CLASS OVERRIDES TO ENFORCE CORRECT TEXT CONTRASTS */
         body, h1, h2, h3, h4, h5, h6, p, span, a, label, textarea, input, select {
             color: var(--text-main) !important;
@@ -251,7 +251,7 @@ if ($username) {
                     <div class="width-50% height-100% display-flex flexDirection-column boxSizing-border-box">
                         <div id="day-modal-list" class="flex-1 overflowY-auto display-flex flexDirection-column gap-10px"></div>
                     </div>
-                    <div class="width-50% height-100% display-flex flexDirection-column boxSizing-border-box" style="padding-left: 15px;">
+                    <div class="width-50% height-100% display-flex flexDirection-column boxSizing-border-box">
                         <div class="display-flex alignItems-center gap-10px marginBottom-15px">
                             <button id="slider-back-btn" class="backgroundColor-transparent border-none fontSize-13px cursor-pointer color-var(--primary) fontWeight-bold hover:opacity-0.8 transition-0.2s">◀ Back</button>
                         </div>
