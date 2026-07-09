@@ -479,7 +479,7 @@ if (is_dir($minigamesDir)) {
                 <div id="tab-minigames" class="tab-content" style="display:none;">
                     <div class="width-100% maxWidth-850px margin-0_auto display-flex flexDirection-column gap-20px">
                         <div class="display-flex justifyContent-space-between alignItems-center flexWrap-wrap gap-15px">
-                            <div class="fontSize-20px fontWeight-bold color-var(--text-main)">LeGC Interactive Arcade</div>
+                            <div class="fontSize-20px fontWeight-bold color-var(--text-main)">Minigames</div>
                             <!-- Real-time dynamic search filter -->
                             <input type="text" id="arcade-search" oninput="filterMinigames()" class="padding-10px_16px width-100% maxWidth-300px borderRadius-8px border-1px_solid_var(--border-color) backgroundColor-var(--bg-card) color-var(--text-main) outline-none" placeholder="Search minigames...">
                         </div>
