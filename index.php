@@ -1105,9 +1105,6 @@ if (is_dir($minigamesDir)) {
         function prevMonth() { calendarDate.setMonth(calendarDate.getMonth() - 1); renderCalendar(); }
         function nextMonth() { calendarDate.setMonth(calendarDate.getMonth() + 1); renderCalendar(); }
         
-        function openAddEventModal() { document.getElementById('event-modal').style.display = 'flex'; }
-        function closeAddEventModal() { document.getElementById('event-modal').style.display = 'none'; }
-        
         function submitAddEvent() {
             const title = document.getElementById('event-title').value.trim();
             const description = document.getElementById('event-desc').value.trim();
