@@ -96,7 +96,7 @@ if (is_dir($minigamesDir)) {
             transition: background 0.25s ease, color 0.25s ease;
         }
         
-        /* LIGHT MODES WITH THEME VARIABLES RESTORED */
+        /* LIGHT MODES */
         body.light {
             --bg-body: #f1f5f9;
             --bg-card: rgba(255, 255, 255, 0.65);
@@ -137,7 +137,7 @@ if (is_dir($minigamesDir)) {
             background: radial-gradient(at 0% 0%, #ccfbf1 0px, transparent 50%), radial-gradient(at 100% 100%, #e0f2fe 0px, transparent 50%), #f1f5f9 !important; 
         }
 
-        /* DARK MODES WITH THEME VARIABLES RESTORED */
+        /* DARK MODES WITH CORRECTED LIGHT TEXT COLORS */
         body.dark {
             --bg-body: #030712;
             --bg-card: rgba(17, 24, 39, 0.7);
@@ -178,13 +178,24 @@ if (is_dir($minigamesDir)) {
             background: radial-gradient(at 0% 0%, #115e59 0px, transparent 40%), radial-gradient(at 100% 100%, #075985 0px, transparent 40%), #020617 !important; 
         }
 
-        /* CORE FROSTED GLASS TRANSFORMATION (.tab-content is removed to fix extra-square bug) */
-        .eccard, #day-events-modal > div, #event-modal > div, #alert-modal > div {
+        /* DIRECT CLASS OVERRIDES TO ENFORCE CORRECT TEXT CONTRASTS */
+        body, h1, h2, h3, h4, h5, h6, p, span, a, label, textarea, input, select {
+            color: var(--text-main) !important;
+        }
+        .color-var\(--text-main\), [class*="color-var(--text-main)"] {
+            color: var(--text-main) !important;
+        }
+        .color-var\(--text-sub\), .text-muted, [class*="color-var(--text-sub)"], label[class*="fontSize-13px"] {
+            color: var(--text-sub) !important;
+        }
+
+        /* CORE FROSTED GLASS TRANSFORMATION */
+        .eccard, #day-events-modal > div, #event-modal > div, #alert-modal > div, [class*="ECModal"] > div, [class*="ec-box"] {
             background: var(--bg-card) !important;
             border: 1px solid var(--border-color) !important;
             backdrop-filter: blur(12px) saturate(180%) !important;
             -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1) !important;
         }
 
         .sidebar-glass {
@@ -201,10 +212,9 @@ if (is_dir($minigamesDir)) {
             border-bottom: 1px solid var(--border-color) !important;
         }
 
-        /* SIDEBAR SELECTED GLOW EFFECT */
+        /* SIDEBAR SELECTED EFFECT */
         .active-link {
             background-color: var(--primary) !important;
-            color: #ffffff !important;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         .active-link span {
@@ -358,27 +368,21 @@ if (is_dir($minigamesDir)) {
             <!-- Left Navigation Sidebar (UPDATED WITH GLASS EFFECT) -->
             <div class="width-250px sidebar-glass padding-20px display-flex flexDirection-column gap-10px height-100% boxSizing-border-box mobile:width-70px mobile:padding-10px transition-0.2s">
                 <div id="link-home" onclick="showTab('home')" class="sidebar-link display-flex alignItems-center gap-12px padding-12px borderRadius-8px cursor-pointer transition-0.2s hover:backgroundColor-var(--primary-light)">
-                    <span class="fontSize-20px">🏡</span>
                     <span class="fontWeight-600 color-var(--text-main) mobile:display-none">Home</span>
                 </div>
                 <div id="link-activities" onclick="showTab('activities')" class="sidebar-link display-flex alignItems-center gap-12px padding-12px borderRadius-8px cursor-pointer transition-0.2s hover:backgroundColor-var(--primary-light)">
-                    <span class="fontSize-20px">📅</span>
                     <span class="fontWeight-600 color-var(--text-main) mobile:display-none">Activities</span>
                 </div>
                 <div id="link-messages" onclick="showTab('messages')" class="sidebar-link display-flex alignItems-center gap-12px padding-12px borderRadius-8px cursor-pointer transition-0.2s hover:backgroundColor-var(--primary-light)">
-                    <span class="fontSize-20px">💬</span>
                     <span class="fontWeight-600 color-var(--text-main) mobile:display-none">Messages</span>
                 </div>
                 <div id="link-minigames" onclick="showTab('minigames')" class="sidebar-link display-flex alignItems-center gap-12px padding-12px borderRadius-8px cursor-pointer transition-0.2s hover:backgroundColor-var(--primary-light)">
-                    <span class="fontSize-20px">🎮</span>
                     <span class="fontWeight-600 color-var(--text-main) mobile:display-none">Minigames</span>
                 </div>
                 <div id="link-profile" onclick="showTab('profile')" class="sidebar-link display-flex alignItems-center gap-12px padding-12px borderRadius-8px cursor-pointer transition-0.2s hover:backgroundColor-var(--primary-light)">
-                    <span class="fontSize-20px">👤</span>
                     <span class="fontWeight-600 color-var(--text-main) mobile:display-none">Profile</span>
                 </div>
                 <div id="link-settings" onclick="showTab('settings')" class="sidebar-link display-flex alignItems-center gap-12px padding-12px borderRadius-8px cursor-pointer transition-0.2s hover:backgroundColor-var(--primary-light)">
-                    <span class="fontSize-20px">⚙️</span>
                     <span class="fontWeight-600 color-var(--text-main) mobile:display-none">Settings</span>
                 </div>
             </div>
@@ -581,15 +585,15 @@ if (is_dir($minigamesDir)) {
         let calendarDate = new Date();
         let loadedEvents = [];
 
-        // ECELEMENT GLOBAL HANDLERS
+        // ECELEMENTS CO-ORDINATION REGISTRY
+        let registeredComponents = [];
+
         let appAlertModal = null;
         let appEventModal = null;
         let appDayEventsModal = null;
 
         window.addEventListener('DOMContentLoaded', () => {
-            // ECElements Bootstrap Initialization
             initECElements();
-
             applyThemeState(currentUser.theme_mode, currentUser.theme_color);
             document.getElementById('topbar-avatar').src = currentUser.avatar || getDefaultAvatar(currentUser.display_name);
             document.getElementById('topbar-name').innerText = currentUser.display_name;
@@ -598,14 +602,58 @@ if (is_dir($minigamesDir)) {
             setInterval(loadNotifications, 8000);
         });
 
-        // BOOTSTRAP FUNCTION: DYNAMICALLY INSTANTIATE AND MOUNT ECELEMENTS
+        // INTEGRATE NEW DYNAMIC REGISTRY PIPELINE
+        function registerComponent(comp) {
+            if (comp) {
+                registeredComponents.push(comp);
+                applyThemeToComponent(comp); // Inject active colors immediately
+            }
+            return comp;
+        }
+
+        // FORCE INJECT ACTIVE CUSTOM ECTHEME PROFILES INTO ALL ACTIVE COMPONENT HANDLERS
+        function applyThemeToComponent(comp) {
+            const isDark = document.body.classList.contains('dark');
+            if (isDark) {
+                comp.enableDarkMode();
+            } else {
+                comp.disableDarkMode();
+            }
+
+            const colorClass = getActiveThemeColor();
+            let primaryColor = "#1877f2"; // Fallback blue
+            
+            if (colorClass === 'purple') primaryColor = "#8a2be2";
+            else if (colorClass === 'green') primaryColor = "#2ecc71";
+            else if (colorClass === 'multi-sunset') primaryColor = "#ff4757";
+            else if (colorClass === 'multi-ocean') primaryColor = "#00bcd4";
+
+            // Establish unified dynamic configuration mapping
+            const activeTheme = new ECTheme({
+                primary: primaryColor,
+                background: isDark ? "rgba(17, 24, 39, 0.7)" : "rgba(255, 255, 255, 0.65)",
+                text: isDark ? "#f9fafb" : "#0f172a",
+                textMuted: isDark ? "#9ca3af" : "#475569",
+                border: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(15, 23, 42, 0.08)"
+            });
+
+            comp.setTheme(activeTheme);
+        }
+
+        function updateAllComponentThemes() {
+            registeredComponents.forEach(comp => {
+                applyThemeToComponent(comp);
+            });
+        }
+
+        // BOOTSTRAP INITIALIZER (UPDATED WITH COMPONENT REGISTRATIONS AND STRIPPED EMOJIS)
         function initECElements() {
-            // 1. Alert modal
-            appAlertModal = new ECModal("Notification");
+            // 1. Alert Modal
+            appAlertModal = registerComponent(new ECModal("Notification"));
             document.body.appendChild(appAlertModal.element);
 
-            // 2. Add Event Form modal
-            appEventModal = new ECModal("Create New Event");
+            // 2. Add Event Form
+            appEventModal = registerComponent(new ECModal("Create New Event"));
             document.body.appendChild(appEventModal.element);
 
             const eventForm = document.createElement('div');
@@ -629,8 +677,8 @@ if (is_dir($minigamesDir)) {
             appEventModal.addFooterButton("Cancel", () => appEventModal.close(), "outline");
             appEventModal.addFooterButton("Save", () => submitAddEvent());
 
-            // 3. Sliding Day Logs modal
-            appDayEventsModal = new ECModal("Events");
+            // 3. Sliding Day list logs
+            appDayEventsModal = registerComponent(new ECModal("Events"));
             document.body.appendChild(appDayEventsModal.element);
 
             const dayLogsLayout = document.createElement('div');
@@ -638,11 +686,9 @@ if (is_dir($minigamesDir)) {
             dayLogsLayout.style.height = "280px";
             dayLogsLayout.innerHTML = `
                 <div id="modal-slider" class="display-flex width-200% height-100%" style="transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateX(0);">
-                    <!-- Pane 1: Event list -->
                     <div class="width-50% height-100% display-flex flexDirection-column boxSizing-border-box">
                         <div id="day-modal-list" class="flex-1 overflowY-auto display-flex flexDirection-column gap-10px"></div>
                     </div>
-                    <!-- Pane 2: Sliding event parameters -->
                     <div class="width-50% height-100% display-flex flexDirection-column boxSizing-border-box" style="padding-left: 15px;">
                         <div class="display-flex alignItems-center gap-10px marginBottom-15px">
                             <button id="slider-back-btn" class="backgroundColor-transparent border-none fontSize-13px cursor-pointer color-var(--primary) fontWeight-bold hover:opacity-0.8 transition-0.2s">◀ Back</button>
@@ -668,89 +714,88 @@ if (is_dir($minigamesDir)) {
             appDayEventsModal._closeBtn.addEventListener('click', () => closeDayEventsModal());
             appDayEventsModal._footer.style.display = 'none';
 
-            // Connect slider back action event listener
             dayLogsLayout.querySelector('#slider-back-btn').addEventListener('click', () => slideBackToEventsList());
 
-            // 4. Post Button
+            // 4. Action Post Button
             const postBtnContainer = document.getElementById('post-btn-container');
             if (postBtnContainer) {
-                const btn = new ECButton("Post");
+                const btn = registerComponent(new ECButton("Post"));
                 btn.onClick(() => submitPost());
                 postBtnContainer.appendChild(btn.element);
             }
 
-            // 5. Add Event Button
+            // 5. Add Event Action
             const addEventContainer = document.getElementById('add-event-btn-container');
             if (addEventContainer) {
-                const btn = new ECButton("+ Add Event");
+                const btn = registerComponent(new ECButton("+ Add Event"));
                 btn.onClick(() => openAddEventModal());
                 addEventContainer.appendChild(btn.element);
             }
 
-            // 6. Calendar Prev / Next Buttons
+            // 6. Navigation Triggers
             const prevContainer = document.getElementById('cal-prev-container');
             if (prevContainer) {
-                const btn = new ECButton("◀ Prev", { variant: "outline" });
+                const btn = registerComponent(new ECButton("◀ Prev", { variant: "outline" }));
                 btn.onClick(() => prevMonth());
                 prevContainer.appendChild(btn.element);
             }
             const nextContainer = document.getElementById('cal-next-container');
             if (nextContainer) {
-                const btn = new ECButton("Next ▶", { variant: "outline" });
+                const btn = registerComponent(new ECButton("Next ▶", { variant: "outline" }));
                 btn.onClick(() => nextMonth());
                 nextContainer.appendChild(btn.element);
             }
 
-            // 7. Send Chat message button
+            // 7. Message Sending Tool
             const sendMsgContainer = document.getElementById('send-msg-container');
             if (sendMsgContainer) {
-                const btn = new ECButton("Send");
+                const btn = registerComponent(new ECButton("Send"));
                 btn.onClick(() => sendChatMessage());
                 sendMsgContainer.appendChild(btn.element);
             }
 
-            // 8. Exit Game button
+            // 8. Exit Game Trigger
             const exitGameContainer = document.getElementById('exit-game-container');
             if (exitGameContainer) {
-                const btn = new ECButton("Exit Arcade", { variant: "outline" });
+                const btn = registerComponent(new ECButton("Exit Arcade", { variant: "outline" }));
                 btn.onClick(() => closeGameArena());
                 exitGameContainer.appendChild(btn.element);
             }
 
-            // 9. Save profile changes
+            // 9. Save settings trigger
             const saveProfileContainer = document.getElementById('save-profile-container');
             if (saveProfileContainer) {
-                const btn = new ECButton("Save Changes");
+                const btn = registerComponent(new ECButton("Save Changes"));
                 btn.onClick(() => saveProfileChanges());
                 saveProfileContainer.appendChild(btn.element);
             }
 
-            // 10. Theme Toggles
+            // 10. Theme Toggles (EMOJIS EXCLUDED)
             const modeRadioContainer = document.getElementById('theme-mode-radio-container');
             if (modeRadioContainer) {
-                const radioMode = new ECRadio("theme_mode", [
-                    { value: "light", label: "☀ Light Theme", checked: currentUser.theme_mode === 'light' },
-                    { value: "dark", label: "🌙 Dark Theme", checked: currentUser.theme_mode === 'dark' }
-                ]);
+                const radioMode = registerComponent(new ECRadio("theme_mode", [
+                    { value: "light", label: "Light Theme", checked: currentUser.theme_mode === 'light' },
+                    { value: "dark", label: "Dark Theme", checked: currentUser.theme_mode === 'dark' }
+                ]));
                 radioMode.onChange((val) => saveLocalTheme(val, null));
                 modeRadioContainer.appendChild(radioMode.element);
             }
 
             const colorRadioContainer = document.getElementById('theme-color-radio-container');
             if (colorRadioContainer) {
-                const radioColor = new ECRadio("theme_color", [
+                const radioColor = registerComponent(new ECRadio("theme_color", [
                     { value: "blue", label: "Classic Blue", checked: currentUser.theme_color === 'blue' },
                     { value: "purple", label: "Royal Purple", checked: currentUser.theme_color === 'purple' },
                     { value: "green", label: "Forest Green", checked: currentUser.theme_color === 'green' },
-                    { value: "multi-sunset", label: "🌇 Sunset (Gradient Theme)", checked: currentUser.theme_color === 'multi-sunset' },
-                    { value: "multi-ocean", label: "🌊 Ocean (Gradient Theme)", checked: currentUser.theme_color === 'multi-ocean' }
-                ]);
+                    { value: "multi-sunset", label: "Sunset (Gradient Theme)", checked: currentUser.theme_color === 'multi-sunset' },
+                    { value: "multi-ocean", label: "Ocean (Gradient Theme)", checked: currentUser.theme_color === 'multi-ocean' }
+                ]));
                 radioColor.onChange((val) => saveLocalTheme(null, val));
                 colorRadioContainer.appendChild(radioColor.element);
             }
         }
 
-        // REDESIGNED POPUP PORTALS USING ECMODAL
+        // REDESIGNED POPUP PORTALS USING DYNAMIC CO-ORDINATED APPALERTMODAL
         function showAlert(title, message, callback = null) {
             appAlertModal.setTitle(title);
             appAlertModal.clearContent();
@@ -767,6 +812,7 @@ if (is_dir($minigamesDir)) {
                 if (callback) callback();
             });
 
+            applyThemeToComponent(appAlertModal); // Inject theme mapping
             appAlertModal.open();
         }
 
@@ -856,15 +902,13 @@ if (is_dir($minigamesDir)) {
             else if (tabName === 'profile') loadProfileView();
             else if (tabName === 'settings') loadSettingsView();
 
+            updateAllComponentThemes(); // Repaint registered components with matched settings
             if (window.ECStyleSheet) window.ECStyleSheet.scan();
         }
 
         function applyThemeState(mode, color) {
             document.body.className = `${mode} ${color}`;
-            const modeRadio = document.querySelector(`input[name="theme_mode"][value="${mode}"]`);
-            if (modeRadio) modeRadio.checked = true;
-            const colorRadio = document.querySelector(`input[name="theme_color"][value="${color}"]`);
-            if (colorRadio) colorRadio.checked = true;
+            updateAllComponentThemes(); // Direct re-theme mapping
         }
 
         function saveLocalTheme(mode, color) {
@@ -1310,20 +1354,26 @@ if (is_dir($minigamesDir)) {
                         const avatar = u.avatar || getDefaultAvatar(u.display_name);
                         const isFriend = u.friendship_status === 'accepted';
                         const text = isFriend ? 'Remove Connection' : 'Establish Connection';
-                        const color = isFriend ? 'backgroundColor-red' : 'backgroundColor-var(--primary)';
 
                         const card = document.createElement('div');
                         card.className = 'eccard padding-12px display-flex alignItems-center justifyContent-space-between backgroundColor-var(--bg-card) ecbounce-1';
-                        card.innerHTML = `
-                            <div class="display-flex alignItems-center gap-10px">
-                                <img src="${avatar}" class="width-36px height-36px borderRadius-50% objectFit-cover border-1px_solid_var(--border-color)">
-                                <div class="display-flex flexDirection-column">
-                                    <span class="fontWeight-bold color-var(--text-main) fontSize-13px">${escapeHtml(u.display_name)}</span>
-                                    <span class="color-var(--text-sub) fontSize-11px">@${u.username}</span>
-                                </div>
+                        
+                        const profileLayout = document.createElement('div');
+                        profileLayout.className = 'display-flex alignItems-center gap-10px';
+                        profileLayout.innerHTML = `
+                            <img src="${avatar}" class="width-36px height-36px borderRadius-50% objectFit-cover border-1px_solid_var(--border-color)">
+                            <div class="display-flex flexDirection-column">
+                                <span class="fontWeight-bold color-var(--text-main) fontSize-13px">${escapeHtml(u.display_name)}</span>
+                                <span class="color-var(--text-sub) fontSize-10px">@${u.username}</span>
                             </div>
-                            <button onclick="toggleFriendship(${u.id})" class="${color} color-white border-none padding-6px_12px borderRadius-6px fontSize-12px fontWeight-bold cursor-pointer ecbounce-2 transition-0.2s">${text}</button>
                         `;
+                        card.appendChild(profileLayout);
+
+                        // Mount active modular connection actions directly
+                        const btn = registerComponent(new ECButton(text, { variant: isFriend ? "outline" : "filled" }));
+                        btn.onClick(() => toggleFriendship(u.id));
+                        card.appendChild(btn.element);
+
                         list.appendChild(card);
                     });
                     if (window.ECStyleSheet) window.ECStyleSheet.scan();

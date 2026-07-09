@@ -25,6 +25,7 @@ if ($username) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+<!-- ... [existing config stays unchanged] ... -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -50,7 +51,7 @@ if ($username) {
             padding: 40px 20px;
         }
 
-        /* LIGHT MODES WITH THEME VARIABLES RESTORED */
+        /* LIGHT MODES */
         body.light {
             --bg-body: #f1f5f9;
             --bg-card: rgba(255, 255, 255, 0.65);
@@ -60,38 +61,13 @@ if ($username) {
             --ec-bg: var(--bg-card);
             --ec-border: var(--border-color);
         }
-        body.light.blue { 
-            --primary: #1877f2;
-            --primary-hover: #166fe5;
-            --primary-light: #e7f3ff;
-            background: radial-gradient(at 0% 0%, #e0f2fe 0px, transparent 50%), radial-gradient(at 100% 100%, #e0f2fe 0px, transparent 50%), #f1f5f9 !important; 
-        }
-        body.light.purple { 
-            --primary: #8a2be2;
-            --primary-hover: #7b1fa2;
-            --primary-light: #f3e5f5;
-            background: radial-gradient(at 0% 0%, #f3e8ff 0px, transparent 50%), radial-gradient(at 100% 100%, #fae8ff 0px, transparent 50%), #f1f5f9 !important; 
-        }
-        body.light.green { 
-            --primary: #2ecc71;
-            --primary-hover: #27ae60;
-            --primary-light: #e8f8f5;
-            background: radial-gradient(at 0% 0%, #dcfce7 0px, transparent 50%), radial-gradient(at 100% 100%, #f0fdf4 0px, transparent 50%), #f1f5f9 !important; 
-        }
-        body.light.multi-sunset { 
-            --primary: #ff4757;
-            --primary-hover: #ff6b81;
-            --primary-light: #ffe0e6;
-            background: radial-gradient(at 0% 0%, #ffedd5 0px, transparent 50%), radial-gradient(at 100% 100%, #fce7f3 0px, transparent 50%), #f1f5f9 !important; 
-        }
-        body.light.multi-ocean { 
-            --primary: #00bcd4;
-            --primary-hover: #00acc1;
-            --primary-light: #e0f7fa;
-            background: radial-gradient(at 0% 0%, #ccfbf1 0px, transparent 50%), radial-gradient(at 100% 100%, #e0f2fe 0px, transparent 50%), #f1f5f9 !important; 
-        }
+        body.light.blue { background: radial-gradient(at 0% 0%, #e0f2fe 0px, transparent 50%), radial-gradient(at 100% 100%, #e0f2fe 0px, transparent 50%), #f1f5f9 !important; }
+        body.light.purple { background: radial-gradient(at 0% 0%, #f3e8ff 0px, transparent 50%), radial-gradient(at 100% 100%, #fae8ff 0px, transparent 50%), #f1f5f9 !important; }
+        body.light.green { background: radial-gradient(at 0% 0%, #dcfce7 0px, transparent 50%), radial-gradient(at 100% 100%, #f0fdf4 0px, transparent 50%), #f1f5f9 !important; }
+        body.light.multi-sunset { background: radial-gradient(at 0% 0%, #ffedd5 0px, transparent 50%), radial-gradient(at 100% 100%, #fce7f3 0px, transparent 50%), #f1f5f9 !important; }
+        body.light.multi-ocean { background: radial-gradient(at 0% 0%, #ccfbf1 0px, transparent 50%), radial-gradient(at 100% 100%, #e0f2fe 0px, transparent 50%), #f1f5f9 !important; }
 
-        /* DARK MODES WITH THEME VARIABLES RESTORED */
+        /* DARK MODES WITH CORRECTED LIGHT TEXT COLORS */
         body.dark {
             --bg-body: #030712;
             --bg-card: rgba(17, 24, 39, 0.7);
@@ -101,44 +77,30 @@ if ($username) {
             --ec-bg: var(--bg-card);
             --ec-border: var(--border-color);
         }
-        body.dark.blue { 
-            --primary: #2d88ff;
-            --primary-hover: #3578e5;
-            --primary-light: #263951;
-            background: radial-gradient(at 0% 0%, #0c1524 0px, transparent 50%), radial-gradient(at 100% 100%, #07101e 0px, transparent 50%), #030712 !important; 
+        body.dark.blue { background: radial-gradient(at 0% 0%, #0c1524 0px, transparent 50%), radial-gradient(at 100% 100%, #07101e 0px, transparent 50%), #030712 !important; }
+        body.dark.purple { background: radial-gradient(at 0% 0%, #1a0b2e 0px, transparent 50%), radial-gradient(at 100% 100%, #0d041e 0px, transparent 50%), #03010c !important; }
+        body.dark.green { background: radial-gradient(at 0% 0%, #052e16 0px, transparent 30%), radial-gradient(at 100% 100%, #022c22 0px, transparent 35%), #020617 !important; }
+        body.dark.multi-sunset { background: radial-gradient(at 0% 0%, #2e1015 0px, transparent 50%), radial-gradient(at 100% 100%, #1e1b4b 0px, transparent 50%), #030712 !important; }
+        body.dark.multi-ocean { background: radial-gradient(at 0% 0%, #115e59 0px, transparent 40%), radial-gradient(at 100% 100%, #075985 0px, transparent 40%), #020617 !important; }
+
+        /* DIRECT CLASS OVERRIDES TO ENFORCE CORRECT TEXT CONTRASTS */
+        body, h1, h2, h3, h4, h5, h6, p, span, a, label, textarea, input, select {
+            color: var(--text-main) !important;
         }
-        body.dark.purple { 
-            --primary: #a040ff;
-            --primary-hover: #8f2be2;
-            --primary-light: #3e2751;
-            background: radial-gradient(at 0% 0%, #1a0b2e 0px, transparent 50%), radial-gradient(at 100% 100%, #0d041e 0px, transparent 50%), #03010c !important; 
+        .color-var\(--text-main\), [class*="color-var(--text-main)"] {
+            color: var(--text-main) !important;
         }
-        body.dark.green { 
-            --primary: #2ecc71;
-            --primary-hover: #27ae60;
-            --primary-light: #1b3d2b;
-            background: radial-gradient(at 0% 0%, #052e16 0px, transparent 30%), radial-gradient(at 100% 100%, #022c22 0px, transparent 35%), #020617 !important; 
-        }
-        body.dark.multi-sunset { 
-            --primary: #ff4757;
-            --primary-hover: #ff6b81;
-            --primary-light: #4c1d24;
-            background: radial-gradient(at 0% 0%, #2e1015 0px, transparent 50%), radial-gradient(at 100% 100%, #1e1b4b 0px, transparent 50%), #030712 !important; 
-        }
-        body.dark.multi-ocean { 
-            --primary: #00bcd4;
-            --primary-hover: #00acc1;
-            --primary-light: #1b3d42;
-            background: radial-gradient(at 0% 0%, #115e59 0px, transparent 40%), radial-gradient(at 100% 100%, #075985 0px, transparent 40%), #020617 !important; 
+        .color-var\(--text-sub\), .text-muted, [class*="color-var(--text-sub)"], label[class*="fontSize-13px"] {
+            color: var(--text-sub) !important;
         }
 
         /* CORE FROSTED GLASS TRANSFORMATION */
-        .eccard, #day-events-modal > div, #alert-modal > div {
+        .eccard, #day-events-modal > div, #alert-modal > div, [class*="ECModal"] > div, [class*="ec-box"] {
             background: var(--bg-card) !important;
             border: 1px solid var(--border-color) !important;
             backdrop-filter: blur(12px) saturate(180%) !important;
             -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1) !important;
         }
 
         @keyframes modalBounce {
@@ -194,19 +156,41 @@ if ($username) {
 
         let appAlertModal = null;
         let appDayEventsModal = null;
+        let registeredComponents = [];
 
         window.addEventListener('DOMContentLoaded', () => {
             initPublicECElements();
             renderCalendar();
         });
 
+        function registerPublicComponent(comp) {
+            if (comp) {
+                registeredComponents.push(comp);
+                applyPublicThemeToComponent(comp);
+            }
+            return comp;
+        }
+
+        function applyPublicThemeToComponent(comp) {
+            // Public calendars default to base blue light accents
+            const isDark = document.body.classList.contains('dark');
+            const targetTheme = new ECTheme({
+                primary: "#1877f2",
+                background: isDark ? "rgba(17, 24, 39, 0.7)" : "rgba(255, 255, 255, 0.65)",
+                text: isDark ? "#f9fafb" : "#0f172a",
+                textMuted: isDark ? "#9ca3af" : "#475569",
+                border: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(15, 23, 42, 0.08)"
+            });
+            comp.setTheme(targetTheme);
+        }
+
         function initPublicECElements() {
-            // 1. Setup notification alert modal
-            appAlertModal = new ECModal("Notification");
+            // 1. Notification Alert Modal
+            appAlertModal = registerPublicComponent(new ECModal("Notification"));
             document.body.appendChild(appAlertModal.element);
 
-            // 2. Setup sliding event overview list modal
-            appDayEventsModal = new ECModal("Events");
+            // 2. Sliding event modal
+            appDayEventsModal = registerPublicComponent(new ECModal("Events"));
             document.body.appendChild(appDayEventsModal.element);
 
             const dayLogsLayout = document.createElement('div');
@@ -247,19 +231,17 @@ if ($username) {
             // 3. Navigation Controls
             const prevContainer = document.getElementById('cal-prev-container');
             if (prevContainer) {
-                const btn = new ECButton("◀ Prev", { variant: "white" });
+                const btn = registerPublicComponent(new ECButton("◀ Prev", { variant: "white" }));
                 btn.onClick(prevMonth);
                 prevContainer.appendChild(btn.element);
             }
 
-            const nextBtn = document.getElementById('calendar-title'); // Anchor reference hook
-            const nextWrapper = document.querySelector('button[onclick="nextMonth()"]');
-            
-            // Re-render navigation containers with ECButton configurations
-            const navRightBtn = new ECButton("Next ▶", { variant: "white" });
-            navRightBtn.onClick(nextMonth);
-            const parentRight = document.getElementById('cal-next-container');
-            if (parentRight) parentRight.appendChild(navRightBtn.element);
+            const nextContainer = document.getElementById('cal-next-container');
+            if (nextContainer) {
+                const btn = registerPublicComponent(new ECButton("Next ▶", { variant: "white" }));
+                btn.onClick(nextMonth);
+                nextContainer.appendChild(btn.element);
+            }
         }
 
         function showAlert(title, message) {
@@ -275,7 +257,7 @@ if ($username) {
         function openDayEventsModal(dateStr, day) {
             const dateObj = new Date(dateStr + "T00:00:00");
             const formattedDate = dateObj.toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
-            document.getElementById('day-modal-title').innerText = `Events on ${formattedDate}`;
+            appDayEventsModal.setTitle(`Events on ${formattedDate}`);
             
             const listContainer = document.getElementById('day-modal-list');
             listContainer.innerHTML = '';
@@ -285,7 +267,6 @@ if ($username) {
             if (dayEvents.length === 0) {
                 listContainer.innerHTML = `
                     <div class="display-flex flexDirection-column alignItems-center justifyContent-center flex-1 color-var(--text-sub) gap-8px padding-20px">
-                        <span class="fontSize-32px">📅</span>
                         <span class="fontSize-13px">No scheduled events today</span>
                     </div>`;
             } else {
