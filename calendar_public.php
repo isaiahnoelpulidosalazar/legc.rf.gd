@@ -50,7 +50,7 @@ if ($username) {
             padding: 40px 20px;
         }
 
-        /* LIGHT MODES */
+        /* LIGHT MODES WITH THEME VARIABLES RESTORED */
         body.light {
             --bg-body: #f1f5f9;
             --bg-card: rgba(255, 255, 255, 0.65);
@@ -60,29 +60,79 @@ if ($username) {
             --ec-bg: var(--bg-card);
             --ec-border: var(--border-color);
         }
-        body.light.blue { background: radial-gradient(at 0% 0%, #e0f2fe 0px, transparent 50%), radial-gradient(at 100% 100%, #e0f2fe 0px, transparent 50%), #f1f5f9 !important; }
-        body.light.purple { background: radial-gradient(at 0% 0%, #f3e8ff 0px, transparent 50%), radial-gradient(at 100% 100%, #fae8ff 0px, transparent 50%), #f1f5f9 !important; }
-        body.light.green { background: radial-gradient(at 0% 0%, #dcfce7 0px, transparent 50%), radial-gradient(at 100% 100%, #f0fdf4 0px, transparent 50%), #f1f5f9 !important; }
-        body.light.multi-sunset { background: radial-gradient(at 0% 0%, #ffedd5 0px, transparent 50%), radial-gradient(at 100% 100%, #fce7f3 0px, transparent 50%), #f1f5f9 !important; }
-        body.light.multi-ocean { background: radial-gradient(at 0% 0%, #ccfbf1 0px, transparent 50%), radial-gradient(at 100% 100%, #e0f2fe 0px, transparent 50%), #f1f5f9 !important; }
+        body.light.blue { 
+            --primary: #1877f2;
+            --primary-hover: #166fe5;
+            --primary-light: #e7f3ff;
+            background: radial-gradient(at 0% 0%, #e0f2fe 0px, transparent 50%), radial-gradient(at 100% 100%, #e0f2fe 0px, transparent 50%), #f1f5f9 !important; 
+        }
+        body.light.purple { 
+            --primary: #8a2be2;
+            --primary-hover: #7b1fa2;
+            --primary-light: #f3e5f5;
+            background: radial-gradient(at 0% 0%, #f3e8ff 0px, transparent 50%), radial-gradient(at 100% 100%, #fae8ff 0px, transparent 50%), #f1f5f9 !important; 
+        }
+        body.light.green { 
+            --primary: #2ecc71;
+            --primary-hover: #27ae60;
+            --primary-light: #e8f8f5;
+            background: radial-gradient(at 0% 0%, #dcfce7 0px, transparent 50%), radial-gradient(at 100% 100%, #f0fdf4 0px, transparent 50%), #f1f5f9 !important; 
+        }
+        body.light.multi-sunset { 
+            --primary: #ff4757;
+            --primary-hover: #ff6b81;
+            --primary-light: #ffe0e6;
+            background: radial-gradient(at 0% 0%, #ffedd5 0px, transparent 50%), radial-gradient(at 100% 100%, #fce7f3 0px, transparent 50%), #f1f5f9 !important; 
+        }
+        body.light.multi-ocean { 
+            --primary: #00bcd4;
+            --primary-hover: #00acc1;
+            --primary-light: #e0f7fa;
+            background: radial-gradient(at 0% 0%, #ccfbf1 0px, transparent 50%), radial-gradient(at 100% 100%, #e0f2fe 0px, transparent 50%), #f1f5f9 !important; 
+        }
 
-        /* DARK MODES */
+        /* DARK MODES WITH THEME VARIABLES RESTORED */
         body.dark {
             --bg-body: #030712;
-            --bg-card: rgba(17, 24, 39, 0.65);
+            --bg-card: rgba(17, 24, 39, 0.7);
             --text-main: #f9fafb;
             --text-sub: #9ca3af;
             --border-color: rgba(255, 255, 255, 0.08);
             --ec-bg: var(--bg-card);
             --ec-border: var(--border-color);
         }
-        body.dark.blue { background: radial-gradient(at 0% 0%, #0c1524 0px, transparent 50%), radial-gradient(at 100% 100%, #07101e 0px, transparent 50%), #030712 !important; }
-        body.dark.purple { background: radial-gradient(at 0% 0%, #1a0b2e 0px, transparent 50%), radial-gradient(at 100% 100%, #0d041e 0px, transparent 50%), #03010c !important; }
-        body.dark.green { background: radial-gradient(at 0% 0%, #052e16 0px, transparent 30%), radial-gradient(at 100% 100%, #022c22 0px, transparent 35%), #020617 !important; }
-        body.dark.multi-sunset { background: radial-gradient(at 0% 0%, #2e1015 0px, transparent 50%), radial-gradient(at 100% 100%, #1e1b4b 0px, transparent 50%), #030712 !important; }
-        body.dark.multi-ocean { background: radial-gradient(at 0% 0%, #115e59 0px, transparent 40%), radial-gradient(at 100% 100%, #075985 0px, transparent 40%), #020617 !important; }
+        body.dark.blue { 
+            --primary: #2d88ff;
+            --primary-hover: #3578e5;
+            --primary-light: #263951;
+            background: radial-gradient(at 0% 0%, #0c1524 0px, transparent 50%), radial-gradient(at 100% 100%, #07101e 0px, transparent 50%), #030712 !important; 
+        }
+        body.dark.purple { 
+            --primary: #a040ff;
+            --primary-hover: #8f2be2;
+            --primary-light: #3e2751;
+            background: radial-gradient(at 0% 0%, #1a0b2e 0px, transparent 50%), radial-gradient(at 100% 100%, #0d041e 0px, transparent 50%), #03010c !important; 
+        }
+        body.dark.green { 
+            --primary: #2ecc71;
+            --primary-hover: #27ae60;
+            --primary-light: #1b3d2b;
+            background: radial-gradient(at 0% 0%, #052e16 0px, transparent 30%), radial-gradient(at 100% 100%, #022c22 0px, transparent 35%), #020617 !important; 
+        }
+        body.dark.multi-sunset { 
+            --primary: #ff4757;
+            --primary-hover: #ff6b81;
+            --primary-light: #4c1d24;
+            background: radial-gradient(at 0% 0%, #2e1015 0px, transparent 50%), radial-gradient(at 100% 100%, #1e1b4b 0px, transparent 50%), #030712 !important; 
+        }
+        body.dark.multi-ocean { 
+            --primary: #00bcd4;
+            --primary-hover: #00acc1;
+            --primary-light: #1b3d42;
+            background: radial-gradient(at 0% 0%, #115e59 0px, transparent 40%), radial-gradient(at 100% 100%, #075985 0px, transparent 40%), #020617 !important; 
+        }
 
-        /* CORE FROSTED GLASS TRANSFORMATION (BACKDROP-FILTERS) */
+        /* CORE FROSTED GLASS TRANSFORMATION */
         .eccard, #day-events-modal > div, #alert-modal > div {
             background: var(--bg-card) !important;
             border: 1px solid var(--border-color) !important;
