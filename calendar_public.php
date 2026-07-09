@@ -240,7 +240,7 @@ if ($username) {
             document.body.appendChild(appAlertModal.element);
 
             // 2. Sliding event modal
-            appDayEventsModal = registerPublicComponent(new ECModal("Events"));
+            appDayEventsModal = registerPublicComponent(new ECModal("Events", { width: "320px" }));
             document.body.appendChild(appDayEventsModal.element);
 
             const dayLogsLayout = document.createElement('div');

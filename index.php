@@ -678,7 +678,7 @@ if (is_dir($minigamesDir)) {
             appEventModal.addFooterButton("Save", () => submitAddEvent());
 
             // 3. Sliding Day list logs
-            appDayEventsModal = registerComponent(new ECModal("Events"));
+            appDayEventsModal = registerComponent(new ECModal("Events", { width: "320px" }));
             document.body.appendChild(appDayEventsModal.element);
 
             const dayLogsLayout = document.createElement('div');
